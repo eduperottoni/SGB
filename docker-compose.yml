@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: bitnami/postgresql:14.9.0
+    container_name: meu_postgres
+    environment:
+      POSTGRESQL_DATABASE: meu_banco_de_dados
+      POSTGRESQL_USERNAME: $DB_USER
+      POSTGRESQL_PASSWORD: $DB_PASSWORD
+      POSTGRESQL_TIMEZONE: America/Sao_Paulo
+      POSTGRESQL_LOG_TIMEZONE: America/Sao_Paulo
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+    ports:
+      - 5432:5432
+
+  application:
+    build: ./app
+    container_name: application
+    depends_on:
+      - postgres
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB_NAME: meu_banco_de_dados
+      POSTGRES_USER: $DB_USER
+      POSTGRES_PASSWORD: $DB_PASSWORD
+    volumes:
+      - ./app/src:/app
+    ports:
+      - 8080:8080

@@ -13,4 +13,5 @@ def populate_tables():
     """
     Function to populate the database
     """
-    ...
+    connect_and_execute_sql('db_utils/populate_tables.sql')
+    logging.debug('TABELAS POPULADAS') 

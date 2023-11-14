@@ -17,9 +17,8 @@ services:
 
   application:
     build: ./app
+    restart: always
     container_name: application
-    depends_on:
-      - postgres
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
@@ -30,3 +29,5 @@ services:
       - ./app/src:/app
     ports:
       - 8080:8080
+    depends_on:
+      - postgres

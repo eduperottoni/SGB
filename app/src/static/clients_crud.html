@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="wrapper">
+        <a href="{{ url_for('clients_crud', action='insert') }}"><button>Insert Client</button></a>
+        <form action="{{ url_for('clients_crud', action='read') }}" method="post">
+            <label for="cpf">CPF (11 dígitos):</label>
+            <input type="text" id="cpf" name="cpf" pattern="\d{11}" required title="CPF deve ter 11 dígitos">
+            <input type="submit" value="Buscar Cliente">
+        </form>
+    </div>
+    
+</body>
+</html>

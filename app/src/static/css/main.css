@@ -5,5 +5,10 @@ body, h1, h2, p, ul, li {
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Roboto', sans-serif;
+}
+
+div.wrapper { 
+    max-width: 1000px;
+    margin: 0 auto;
 }

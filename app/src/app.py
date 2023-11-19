@@ -141,6 +141,240 @@ def get_all_clients_from_db():
     clients_list = get_dicts_from_tuples(tuples, ['cpf', 'nome', 'data_nascimento'])
     return clients_list
 
+@app.route('/authors-crud/', methods=['GET', 'POST'])
+def authors_crud():
+    action = request.args.get('action')
+    logging.debug(action)
+    
+    if request.method == 'POST':
+        logging.debug('ISSO FOI UM POST')
+        if action in ['create', 'update']:
+            author_form = request.form
+            logging.debug(f'Vamos cadastrar/atualizar um autor: {author_form["nome"]}')
+
+            if action == 'create':
+                query = f'INSERT INTO Autor (nome, biografia, data_nascimento) VALUES {author_form["nome"], author_form["biografia"], author_form["data_nascimento"]}'
+                execute_query(query) 
+                
+                logging.debug('Autor criado')
+                query = f"SELECT * FROM Autor WHERE nome = %s;"
+                params = (author_form["nome"],)
+                logging.debug(execute_query(query, params))
+
+            elif action == 'update':
+                logging.debug('Vamos atualizar o autor')
+                logging.debug(author_form)
+
+                query = """
+                    UPDATE Autor 
+                    SET biografia = %s, data_nascimento = %s
+                    WHERE nome = %s
+                """
+                values = (author_form['biografia'], author_form['data_nascimento'], author_form['nome'])
+                execute_query(query, values)
+
+                logging.debug('Autor atualizado')
+                query = f"SELECT * FROM Autor WHERE nome = %s;"
+                params = (author_form["nome"],)
+                logging.debug(execute_query(query, params))
+
+            elif action == 'delete':
+                return render_template()
+                
+            return redirect('/authors-crud/')
+
+        elif action == 'read':
+            authors_info = request.form
+            query = f'SELECT * FROM Autor'
+            query, params = format_search_by_params_query(query, authors_info)
+            tuples = execute_query(query, params)
+            logging.debug(f'MOSTRAREMOS OS RESULTADOS DA BUSCA POR CLIENTES: {tuples}')
+            
+            return render_template('authors.html', search=tuples)
+        
+        elif action == 'delete':
+            logging.debug('Nome')
+            logging.debug(request.form)
+            logging.debug(request.form['nome'])
+            #TODO Ver se é possível deletar (se o authore não tem empréstimos pendentes)
+            query = f"DELETE FROM Autor WHERE nome = %s;"
+            params = (request.form.get('nome'),)
+            execute_query(query, params)
+            logging.debug('Autor deletado')
+
+            query = f'SELECT * FROM Autor WHERE nome = %s;'
+            params = (request.form.get('nome'),)
+            tuples = execute_query(query, params)
+            logging.debug()
+
+    # If method == 'GET':
+    if action:
+        author_form={}
+        form_title=''
+        match action:
+            case 'update':
+                if 'nome' in request.args:
+                    # try:
+                    nome = request.args.get('nome')
+                    query = f"SELECT (nome, biografia, data_nascimento) FROM Autor WHERE nome = %s;"
+                    params = (nome,)
+                    tuple = execute_query(query, params)
+                    authors_list = get_dicts_from_tuples(tuple, ['nome', 'biografia', 'data_nascimento'])
+                    authors_list[0]['nome'] = authors_list[0]['nome'][1:-1]
+                    author_form = authors_list[0]
+                    form_title = 'Atualizar autor'
+                    # except Exception as e:
+                    #     return render_template('error.html',
+                    #                         msg="Erro ao recuperar o CPF especificado",
+                    #                         url_for_link="clients_crud",
+                    #                         action_link='update')
+                else:
+                    authors_list = get_all_authors_from_db()
+                    return render_template('choose_author.html', authors=authors_list)
+
+            case 'create':
+                form_title='Cadastrar autor'
+
+            case 'read':
+                form_title = 'Buscar autor'
+
+            case 'delete':
+                    authors_list = get_all_authors_from_db()
+                    return render_template('choose_author.html', authors=authors_list)
+
+        
+        return render_template('author_form.html',
+                                author_form=author_form,
+                                form_title=form_title,
+                                crud_action=action)
+    
+    return render_template('authors_crud.html', crud_action=action)
+
+
+def get_all_authors_from_db():
+    query = f"SELECT (nome, biografia, data_de_nascimento) FROM Autor"
+    tuples = execute_query(query)
+    authors_list = get_dicts_from_tuples(tuples, ['nome', 'biografia', 'data_nascimento'])
+    return authors_list
+
+
+@app.route('/publishers-crud/', methods=['GET', 'POST'])
+def publishers_crud():
+    action = request.args.get('action')
+    logging.debug(action)
+    
+    if request.method == 'POST':
+        logging.debug('ISSO FOI UM POST')
+        if action in ['create', 'update']:
+            publishers_form = request.form
+            logging.debug(f'Vamos cadastrar/atualizar uma editora: {publishers_form["nome"]}')
+
+            if action == 'create':
+                query = f'INSERT INTO Editora (nome, endereco, contato) VALUES {publishers_form["nome"], publishers_form["endereco"], publishers_form["contato"]}'
+                execute_query(query) 
+                
+                logging.debug('Editora criada')
+                query = f"SELECT * FROM Editora WHERE nome = %s;"
+                params = (publishers_form["nome"],)
+                logging.debug(execute_query(query, params))
+
+            elif action == 'update':
+                logging.debug('Vamos atualizar a editora')
+                logging.debug(publishers_form)
+
+                query = """
+                    UPDATE Editora 
+                    SET endereco = %s, contato = %s
+                    WHERE nome = %s
+                """
+                values = (publishers_form["nome"], publishers_form["endereco"], publishers_form["contato"])
+                execute_query(query, values)
+
+                logging.debug('Editora atualizada')
+                query = f"SELECT * FROM Editora WHERE nome = %s;"
+                params = (publishers_form["nome"],)
+                logging.debug(execute_query(query, params))
+
+            elif action == 'delete':
+                return render_template()
+                
+            return redirect('/publishers-crud/')
+
+        elif action == 'read':
+            publishers_info = request.form
+            query = f'SELECT * FROM Editora'
+            query, params = format_search_by_params_query(query, publishers_info)
+            tuples = execute_query(query, params)
+            logging.debug(f'MOSTRAREMOS OS RESULTADOS DA BUSCA POR EDITORA: {tuples}')
+            
+            return render_template('publishers.html', search=tuples)
+        
+        elif action == 'delete':
+            logging.debug('CPF')
+            logging.debug(request.form)
+            logging.debug(request.form['nome'])
+            #TODO Ver se é possível deletar (se o cliente não tem empréstimos pendentes)
+            query = f"DELETE FROM Editora WHERE nome = %s;"
+            params = (request.form.get('nome'),)
+            execute_query(query, params)
+            logging.debug('Edutira deletada')
+
+            query = f'SELECT * FROM Editora WHERE nome = %s;'
+            params = (request.form.get('nome'),)
+            tuples = execute_query(query, params)
+            logging.debug()
+
+    # If method == 'GET':
+    if action:
+        publisher_form={}
+        form_title=''
+        match action:
+            case 'update':
+                if 'nome' in request.args:
+                    # try:
+                    nome = request.args.get('nome')
+                    query = f"SELECT (nome, endereco, contato) FROM Editora WHERE nome = %s;"
+                    params = (nome,)
+                    tuple = execute_query(query, params)
+                    publishers_list = get_dicts_from_tuples(tuple, ['nome', 'endereco', 'contato'])
+                    publishers_list[0]['nome'] = publishers_list[0]['nome'][1:-1]
+                    publisher_form = publishers_list[0]
+                    form_title = 'Atualizar editora'
+                    # except Exception as e:
+                    #     return render_template('error.html',
+                    #                         msg="Erro ao recuperar o CPF especificado",
+                    #                         url_for_link="clients_crud",
+                    #                         action_link='update')
+                else:
+                    publishers_list = get_all_publishers_from_db()
+                    return render_template('choose_publisher.html', publishers=publishers_list)
+
+            case 'create':
+                form_title='Cadastrar editora'
+
+            case 'read':
+                form_title = 'Buscar editora'
+
+            case 'delete':
+                    publishers_list = get_all_publishers_from_db()
+                    return render_template('choose_publisher.html', publishers=publishers_list)
+
+        
+        return render_template('publisher_form.html',
+                                publisher_form=publisher_form,
+                                form_title=form_title,
+                                crud_action=action)
+    
+    return render_template('publishers_crud.html', crud_action=action)
+
+
+def get_all_publishers_from_db():
+    query = f"SELECT (nome, endereco, contato) FROM Editora"
+    tuples = execute_query(query)
+    logging.debug(tuples)
+    publishers_list = get_dicts_from_tuples(tuples, ['nome', 'endereco', 'contato'])
+    return publishers_list
+
 
 def get_dicts_from_tuples(tuples: list[str], keys_list: list[str]) -> list[dict[str | str]]:
     """

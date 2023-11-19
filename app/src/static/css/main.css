@@ -12,3 +12,12 @@ div.wrapper {
     max-width: 1000px;
     margin: 0 auto;
 }
+
+div.form-group {
+    margin: 10px 0;
+}
+
+div.form-group button {
+    display: block;
+    margin: 0 auto;
+}

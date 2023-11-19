@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'head.html' %}
+<body>
+    <div class="container mt-4">
+        {% if search %}
+        <ul>
+            {% for client in search %}
+                <li>{{client}}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <div class="alert alert-danger" role="alert">
+                Nenhum cliente encontrado. <a href="{{url_for('clients_crud', action='read')}}" class="alert-link">Tente novamente</a>.
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

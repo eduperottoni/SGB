@@ -131,7 +131,8 @@ INSERT INTO Cliente (cpf, nome, data_nascimento, data_registro) VALUES
     ('78901654326', 'Larissa Santos', '1982-11-05', '2022-03-17'),
     ('89012765437', 'Fábio Costa', '1998-06-12', '2022-04-24'),
     ('90123876548', 'Mariana Souza', '1984-03-19', '2022-05-01'),
-    ('01234987659', 'Pedro Oliveira', '1990-12-26', '2022-06-08');
+    ('01234987659', 'Pedro Oliveira', '1990-12-26', '2022-06-08'),
+    ('90456372678', 'Pedro Oliveira', '2002-06-08', '2023-06-09');
 
 -- Para Agatha Christie
 INSERT INTO Escrito_por (autor, livro) VALUES

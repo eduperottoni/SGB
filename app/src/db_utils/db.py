@@ -23,10 +23,14 @@ def connect_and_execute_sql(filepath: str):
         conn.commit()
 
 
-def execute_query(query: str):
+def execute_query(query: str, params: tuple[str | int] = None):
     with connect_to_database() as conn:
         with conn.cursor() as cursor:
-            cursor.execute(query)
+            if params:
+                cursor.execute(query, params)
+            else:
+                cursor.execute(query)
+
             try:
                 rows = cursor.fetchall()
                 return rows if rows else None

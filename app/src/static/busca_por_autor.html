@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Busca</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
-</head>
+{% set title='Busca' %}
+{% include 'head.html' %}
 <body>
     {% include 'header.html' %}
     <form action="/book-by-author/" method="post"> <!-- Defina a URL de submissão no atributo 'action' -->

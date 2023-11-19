@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'head.html' %}
+<body>
+    <div class="container mt-4">
+        <div class="alert alert-danger" role="alert">
+            {{ msg }} <a href="{{url_for(url_for_link, action=action_link)}}" class="alert-link">Tente novamente</a>.
+        </div>
+    </div>
+</body>
+</html>

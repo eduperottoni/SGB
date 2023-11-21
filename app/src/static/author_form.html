@@ -9,6 +9,17 @@
     
     <form action="{{ url_for('authors_crud', action=crud_action) }}" method="post">
         <div class="form-group">
+            <label for="id">ID do Autor:</label>
+            <input 
+                value="{{ author_form['id'] }}"
+                type="text"
+                class="form-control"
+                id="id" name="id"
+                {% if crud_action != 'read' %}required{% endif %}
+                {% if crud_action == 'update' %}disabled{% endif %}>
+        </div>
+    
+        <div class="form-group">
             <label for="cpf">Nome do autor:</label>
             <label for="nome">Nome (até 50 caracteres):</label>
             <input value="{{ author_form['nome'] }}" class="form-control" id="nome" name="nome" maxlength="50" {% if crud_action != 'read' %}required{% endif %}>

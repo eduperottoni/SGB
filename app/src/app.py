@@ -15,8 +15,8 @@ app = Flask(
 
 @app.route('/')
 def hello():
-    query = "SELECT * FROM Autor WHERE nome = %s;"
-    params = ('Agatha Christie',)
+    query = "SELECT * FROM Autor WHERE nome = %s OR nome = %s;"
+    params = ('Agatha Christie', 'Jane Austen')
     tuples = execute_query(query, params)
     logging.debug(tuples)
     return 'Hello, World!'
@@ -64,7 +64,7 @@ def clients_crud():
 
             elif action == 'delete':
                 return render_template()
-                
+
             return redirect('/clients-crud/')
 
         elif action == 'read':
@@ -89,7 +89,6 @@ def clients_crud():
             query = f'SELECT * FROM Cliente WHERE cpf = %s;'
             params = (request.form.get('cpf'),)
             tuples = execute_query(query, params)
-            logging.debug()
 
     # If method == 'GET':
     if action:
@@ -100,12 +99,10 @@ def clients_crud():
                 if 'cpf' in request.args:
                     # try:
                     cpf = request.args.get('cpf')
-                    query = f"SELECT (cpf, nome, data_nascimento) FROM Cliente WHERE cpf = %s;"
+                    query = f"SELECT * FROM Cliente WHERE cpf = %s;"
                     params = (cpf,)
-                    tuple = execute_query(query, params)
-                    clients_list = get_dicts_from_tuples(tuple, ['cpf', 'nome', 'data_nascimento'])
-                    clients_list[0]['nome'] = clients_list[0]['nome'][1:-1]
-                    client_form = clients_list[0]
+                    client_form = execute_query(query, params)[0]
+
                     form_title = 'Atualizar cliente'
                     # except Exception as e:
                     #     return render_template('error.html',
@@ -113,7 +110,7 @@ def clients_crud():
                     #                         url_for_link="clients_crud",
                     #                         action_link='update')
                 else:
-                    clients_list = get_all_clients_from_db()
+                    clients_list = get_all_registers_in_table('Cliente')
                     return render_template('choose_client.html', clients=clients_list)
 
             case 'create':
@@ -123,7 +120,7 @@ def clients_crud():
                 form_title = 'Buscar cliente'
 
             case 'delete':
-                    clients_list = get_all_clients_from_db()
+                    clients_list = get_all_registers_in_table('Cliente')
                     return render_template('choose_client.html', clients=clients_list)
 
         
@@ -135,11 +132,12 @@ def clients_crud():
     return render_template('clients_crud.html', crud_action=action)
 
 
-def get_all_clients_from_db():
-    query = f"SELECT (cpf, nome, data_nascimento) FROM Cliente"
+def get_all_registers_in_table(table_name: str) -> 'list[RealDictRow]':
+    query = 'SELECT * FROM ' + table_name
+    # params = (table_name,)
     tuples = execute_query(query)
-    clients_list = get_dicts_from_tuples(tuples, ['cpf', 'nome', 'data_nascimento'])
-    return clients_list
+
+    return tuples
 
 @app.route('/authors-crud/', methods=['GET', 'POST'])
 def authors_crud():
@@ -205,7 +203,7 @@ def authors_crud():
             query = f'SELECT * FROM Autor WHERE nome = %s;'
             params = (request.form.get('nome'),)
             tuples = execute_query(query, params)
-            logging.debug()
+            
 
     # If method == 'GET':
     if action:
@@ -229,7 +227,7 @@ def authors_crud():
                     #                         url_for_link="clients_crud",
                     #                         action_link='update')
                 else:
-                    authors_list = get_all_authors_from_db()
+                    authors_list = get_all_registers_in_table('Autor')
                     return render_template('choose_author.html', authors=authors_list)
 
             case 'create':
@@ -239,7 +237,7 @@ def authors_crud():
                 form_title = 'Buscar autor'
 
             case 'delete':
-                    authors_list = get_all_authors_from_db()
+                    authors_list = get_all_registers_in_table('Autor')
                     return render_template('choose_author.html', authors=authors_list)
 
         
@@ -249,13 +247,6 @@ def authors_crud():
                                 crud_action=action)
     
     return render_template('authors_crud.html', crud_action=action)
-
-
-def get_all_authors_from_db():
-    query = f"SELECT (nome, biografia, data_de_nascimento) FROM Autor"
-    tuples = execute_query(query)
-    authors_list = get_dicts_from_tuples(tuples, ['nome', 'biografia', 'data_nascimento'])
-    return authors_list
 
 
 @app.route('/publishers-crud/', methods=['GET', 'POST'])
@@ -284,10 +275,10 @@ def publishers_crud():
 
                 query = """
                     UPDATE Editora 
-                    SET endereco = %s, contato = %s
-                    WHERE nome = %s
+                    SET nome = %s, endereco = %s, contato = %s
+                    WHERE id = %s
                 """
-                values = (publishers_form["nome"], publishers_form["endereco"], publishers_form["contato"])
+                values = (publishers_form["nome"], publishers_form["endereco"], publishers_form["contato"], publishers_form['id'])
                 execute_query(query, values)
 
                 logging.debug('Editora atualizada')
@@ -322,7 +313,6 @@ def publishers_crud():
             query = f'SELECT * FROM Editora WHERE nome = %s;'
             params = (request.form.get('nome'),)
             tuples = execute_query(query, params)
-            logging.debug()
 
     # If method == 'GET':
     if action:
@@ -333,12 +323,14 @@ def publishers_crud():
                 if 'nome' in request.args:
                     # try:
                     nome = request.args.get('nome')
-                    query = f"SELECT (nome, endereco, contato) FROM Editora WHERE nome = %s;"
+                    query = f"SELECT * FROM Editora WHERE nome = %s;"
                     params = (nome,)
-                    tuple = execute_query(query, params)
-                    publishers_list = get_dicts_from_tuples(tuple, ['nome', 'endereco', 'contato'])
-                    publishers_list[0]['nome'] = publishers_list[0]['nome'][1:-1]
-                    publisher_form = publishers_list[0]
+                    publisher_form = execute_query(query, params)[0]
+
+                    logging.debug('111111111111111111111111')
+                    logging.debug(publisher_form)
+                    # publishers_list = get_all_registers_in_table('Editora')
+                    # publisher_form = publishers_list[0]
                     form_title = 'Atualizar editora'
                     # except Exception as e:
                     #     return render_template('error.html',
@@ -346,7 +338,7 @@ def publishers_crud():
                     #                         url_for_link="clients_crud",
                     #                         action_link='update')
                 else:
-                    publishers_list = get_all_publishers_from_db()
+                    publishers_list = get_all_registers_in_table('Editora')
                     return render_template('choose_publisher.html', publishers=publishers_list)
 
             case 'create':
@@ -356,7 +348,7 @@ def publishers_crud():
                 form_title = 'Buscar editora'
 
             case 'delete':
-                    publishers_list = get_all_publishers_from_db()
+                    publishers_list = get_all_registers_in_table('Editora')
                     return render_template('choose_publisher.html', publishers=publishers_list)
 
         
@@ -368,31 +360,23 @@ def publishers_crud():
     return render_template('publishers_crud.html', crud_action=action)
 
 
-def get_all_publishers_from_db():
-    query = f"SELECT (nome, endereco, contato) FROM Editora"
-    tuples = execute_query(query)
-    logging.debug(tuples)
-    publishers_list = get_dicts_from_tuples(tuples, ['nome', 'endereco', 'contato'])
-    return publishers_list
+# def get_dicts_from_tuples(tuples: list[str], keys_list: list[str]) -> list[dict[str | str]]:
+#     """
+#     Function to transform a result from a db query to a dict based on the specified keys
 
-
-def get_dicts_from_tuples(tuples: list[str], keys_list: list[str]) -> list[dict[str | str]]:
-    """
-    Function to transform a result from a db query to a dict based on the specified keys
-
-    :param tuples: tuples from DB
-    :param keys_list: list with keys, in the order of the tuples resultss
-    :return: the result dict
-    """
-    dicts_list = []
-    for tuple in tuples:
-        logging.debug(tuple)
-        for t in tuple:
-            t = t[1:-1]
-            dicts_list.append(
-                {keys_list[index]: column for index, column in enumerate(t.split(','))}
-            )
-    return dicts_list
+#     :param tuples: tuples from DB
+#     :param keys_list: list with keys, in the order of the tuples resultss
+#     :return: the result dict
+#     """
+#     dicts_list = []
+#     for tuple in tuples:
+#         logging.debug(tuple)
+#         for t in tuple:
+#             t = t[1:-1]
+#             dicts_list.append(
+#                 {keys_list[index]: column for index, column in enumerate(t.split(','))}
+#             )
+#     return dicts_list
                 
 
 

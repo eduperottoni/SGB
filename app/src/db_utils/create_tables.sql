@@ -1,3 +1,6 @@
+-- DÚVIDA: É MELHOR NÃO APAGAR AS ENTIDADES PARA MANTER UM HISTÓRICO APONTANDO PARA ELAS OU
+-- APAGÁ-LAS E QUANDO ISSO ACONTECER FAZER UM REGISTRO "BURRO" NO HISTÓRICO ?????
+
 DROP TABLE Sobre;
 DROP TABLE Escrito_por;
 -- DROP TABLE Livros_alugados;
@@ -16,6 +19,7 @@ CREATE TABLE Editora
  contato VARCHAR(20) NOT NULL
 ); 
 
+-- Não apagamos livros realmente, para manter no histórico. Válido?
 CREATE TABLE Livro 
 ( 
  titulo VARCHAR(50) NOT NULL,
@@ -24,14 +28,17 @@ CREATE TABLE Livro
  editora INT REFERENCES Editora(id),
  num_copias INT NOT NULL DEFAULT 0,  -- Removi as aspas simples e ajustei o valor padrão
  UNIQUE (id)
+--  ativo BOOLEAN DEFAULT true;
 );
 
+-- Não apagamos clientes realmente, para manter no histórico. Válido?
 CREATE TABLE Cliente 
 ( 
  cpf CHAR(11) PRIMARY KEY,  -- Alterei de CHAR para VARCHAR e defini o tamanho n
  nome VARCHAR(50) NOT NULL,
  data_nascimento DATE,
  data_registro DATE NOT NULL
+--  ativo BOOLEAN DEFAULT true;
 );
 
 CREATE TABLE Autor 
@@ -48,15 +55,17 @@ CREATE TABLE Genero
  descricao VARCHAR(100) NOT NULL
 ); 
 
-CREATE TABLE Historico 
-( 
- data_aluguel DATE NOT NULL,
- data_devolucao DATE,
- valor_pago FLOAT,
- cliente CHAR(11) REFERENCES Cliente(cpf),
- livro INT REFERENCES Livro(id),
- id SERIAL PRIMARY KEY
-); 
+
+CREATE TABLE Historico
+(
+    id SERIAL PRIMARY KEY,
+    data_aluguel DATE NOT NULL,
+    data_devolucao DATE,
+    valor_pago FLOAT,
+    cliente CHAR(11) REFERENCES Cliente(cpf),
+    livro INT REFERENCES Livro(id)
+);
+
 
 -- CREATE TABLE Livros_alugados 
 -- ( 
@@ -76,4 +85,5 @@ CREATE TABLE Sobre
  genero VARCHAR(30) REFERENCES Genero(nome),
  livro INT REFERENCES Livro(id),
  PRIMARY KEY (genero, livro)
-); 
+);
+

@@ -1,0 +1,7 @@
+
+
+<select id="autor" name="autor">
+    {% for autor in lista_autores %}
+        <option value="{{autor['id']}}">{{autor['nome']}}</option>
+    {% endfor %}
+</select>

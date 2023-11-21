@@ -1,4 +1,5 @@
 from psycopg2.extensions import connection, cursor 
+from psycopg2.extras import RealDictCursor
 from psycopg2 import connect, ProgrammingError
 import os, logging
 
@@ -25,7 +26,7 @@ def connect_and_execute_sql(filepath: str):
 
 def execute_query(query: str, params: tuple[str | int] = None):
     with connect_to_database() as conn:
-        with conn.cursor() as cursor:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
             if params:
                 cursor.execute(query, params)
             else:

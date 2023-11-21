@@ -212,20 +212,14 @@ def authors_crud():
         match action:
             case 'update':
                 if 'nome' in request.args:
-                    # try:
+
                     nome = request.args.get('nome')
-                    query = f"SELECT (nome, biografia, data_nascimento) FROM Autor WHERE nome = %s;"
+                    query = f"SELECT * FROM Autor WHERE nome = %s;"
                     params = (nome,)
-                    tuple = execute_query(query, params)
-                    authors_list = get_dicts_from_tuples(tuple, ['nome', 'biografia', 'data_nascimento'])
-                    authors_list[0]['nome'] = authors_list[0]['nome'][1:-1]
-                    author_form = authors_list[0]
+                    author_form = execute_query(query, params)[0]
+
                     form_title = 'Atualizar autor'
-                    # except Exception as e:
-                    #     return render_template('error.html',
-                    #                         msg="Erro ao recuperar o CPF especificado",
-                    #                         url_for_link="clients_crud",
-                    #                         action_link='update')
+
                 else:
                     authors_list = get_all_registers_in_table('Autor')
                     return render_template('choose_author.html', authors=authors_list)
@@ -301,9 +295,6 @@ def publishers_crud():
             return render_template('publishers.html', search=tuples)
         
         elif action == 'delete':
-            logging.debug('CPF')
-            logging.debug(request.form)
-            logging.debug(request.form['nome'])
             #TODO Ver se é possível deletar (se o cliente não tem empréstimos pendentes)
             query = f"DELETE FROM Editora WHERE nome = %s;"
             params = (request.form.get('nome'),)
@@ -321,7 +312,6 @@ def publishers_crud():
         match action:
             case 'update':
                 if 'nome' in request.args:
-                    # try:
                     nome = request.args.get('nome')
                     query = f"SELECT * FROM Editora WHERE nome = %s;"
                     params = (nome,)
@@ -329,14 +319,9 @@ def publishers_crud():
 
                     logging.debug('111111111111111111111111')
                     logging.debug(publisher_form)
-                    # publishers_list = get_all_registers_in_table('Editora')
-                    # publisher_form = publishers_list[0]
+
                     form_title = 'Atualizar editora'
-                    # except Exception as e:
-                    #     return render_template('error.html',
-                    #                         msg="Erro ao recuperar o CPF especificado",
-                    #                         url_for_link="clients_crud",
-                    #                         action_link='update')
+
                 else:
                     publishers_list = get_all_registers_in_table('Editora')
                     return render_template('choose_publisher.html', publishers=publishers_list)
@@ -358,26 +343,6 @@ def publishers_crud():
                                 crud_action=action)
     
     return render_template('publishers_crud.html', crud_action=action)
-
-
-# def get_dicts_from_tuples(tuples: list[str], keys_list: list[str]) -> list[dict[str | str]]:
-#     """
-#     Function to transform a result from a db query to a dict based on the specified keys
-
-#     :param tuples: tuples from DB
-#     :param keys_list: list with keys, in the order of the tuples resultss
-#     :return: the result dict
-#     """
-#     dicts_list = []
-#     for tuple in tuples:
-#         logging.debug(tuple)
-#         for t in tuple:
-#             t = t[1:-1]
-#             dicts_list.append(
-#                 {keys_list[index]: column for index, column in enumerate(t.split(','))}
-#             )
-#     return dicts_list
-                
 
 
 def format_search_by_params_query(base_query: str, info: dict[str | str]) -> str | tuple:

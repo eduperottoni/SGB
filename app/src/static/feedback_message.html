@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'head.html' %}
+<body>
+    <div class="container mt-4">
+        {% if success %}
+        <div class="alert alert-success" role="alert">
+            {{ msg }} <a href="{{url_for(try_again_link, action=action)}}" class="alert-link">Voltar</a>.
+        </div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">
+            {{ msg }} <a href="{{url_for(try_again_link, action=action)}}" class="alert-link">Tente novamente</a>.
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

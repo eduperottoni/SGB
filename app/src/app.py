@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect
 from config import create_tables, populate_tables
 # from flask_sqlalchemy import SQLAlchemy
 from db_utils.db import execute_query
+from app_utils import get_registers_in_table
+from routes import book
 
 from datetime import datetime
 import logging
@@ -21,9 +23,10 @@ def hello():
     logging.debug(tuples)
     return 'Hello, World!'
 
-# @app.route('/clients-crud/', methods=['GET'])
-# def show_clients_crud():
-#     return render_template('clients_crud.html')
+
+@app.route('/books-crud/', methods=['GET', 'POST'])
+def books_crud():
+    return book.books_crud()
 
 @app.route('/clients-crud/', methods=['GET', 'POST'])
 def clients_crud():
@@ -32,63 +35,58 @@ def clients_crud():
     
     if request.method == 'POST':
         logging.debug('ISSO FOI UM POST')
-        if action in ['create', 'update']:
-            client_form = request.form
-            logging.debug(f'Vamos cadastrar/atualizar um cliente: {client_form["cpf"]}')
+        client_form = request.form
+    
+        if action == 'create':
+            query = f'INSERT INTO Cliente (cpf, nome, data_nascimento, data_registro) VALUES {client_form["cpf"], client_form["nome"], client_form["data_nascimento"], datetime.now().isoformat()}'
+            execute_query(query) 
+            
+            logging.debug('Cliente criado')
+            query = f"SELECT * FROM Cliente WHERE cpf = %s;"
+            params = (client_form["cpf"],)
+            logging.debug(execute_query(query, params))
 
-            if action == 'create':
-                query = f'INSERT INTO Cliente (cpf, nome, data_nascimento, data_registro) VALUES {client_form["cpf"], client_form["nome"], client_form["data_nascimento"], datetime.now().isoformat()}'
-                execute_query(query) 
-                
-                logging.debug('Cliente criado')
-                query = f"SELECT * FROM Cliente WHERE cpf = %s;"
-                params = (client_form["cpf"],)
-                logging.debug(execute_query(query, params))
+        elif action == 'update':
+            logging.debug('Vamos atualizar o cliente')
+            logging.debug(client_form)
 
-            elif action == 'update':
-                logging.debug('Vamos atualizar o cliente')
-                logging.debug(client_form)
+            query = """
+                UPDATE Cliente 
+                SET nome = %s, data_nascimento = %s
+                WHERE cpf = %s
+            """
+            values = (client_form['nome'], client_form['data_nascimento'], client_form['cpf'])
+            execute_query(query, values)
 
-                query = """
-                    UPDATE Cliente 
-                    SET nome = %s, data_nascimento = %s
-                    WHERE cpf = %s
-                """
-                values = (client_form['nome'], client_form['data_nascimento'], client_form['cpf'])
-                execute_query(query, values)
+            logging.debug('Cliente atualizado')
+            query = f"SELECT * FROM Cliente WHERE cpf = %s;"
+            params = (client_form["cpf"],)
+            logging.debug(execute_query(query, params))
 
-                logging.debug('Cliente atualizado')
-                query = f"SELECT * FROM Cliente WHERE cpf = %s;"
-                params = (client_form["cpf"],)
-                logging.debug(execute_query(query, params))
+        elif action == 'delete':
+            logging.debug(request.form)
+            #FIXME Ver se é possível deletar (se cliente não tem empréstimos pendentes, por exemplo)
+            query = "UPDATE Cliente SET ativo = %s WHERE cpf = %s"
+            params = ('false', client_form['cpf'])
+            execute_query(query, params)
 
-            elif action == 'delete':
-                return render_template()
+            return render_template('feedback_message.html',
+                                    msg = 'Cliente deletado com sucesso!',
+                                    action = action,
+                                    success = True,
+                                    try_again_link = 'clients_crud')
 
             return redirect('/clients-crud/')
 
+
         elif action == 'read':
-            clients_info = request.form
-            query = f'SELECT * FROM Cliente'
-            query, params = format_search_by_params_query(query, clients_info)
-            tuples = execute_query(query, params)
+            clients_info = {k: v for k, v in request.form.items() if v}
+
+            tuples = get_registers_in_table('Cliente', **clients_info)
+
             logging.debug(f'MOSTRAREMOS OS RESULTADOS DA BUSCA POR CLIENTES: {tuples}')
             
             return render_template('clients.html', search=tuples)
-        
-        elif action == 'delete':
-            logging.debug('CPF')
-            logging.debug(request.form)
-            logging.debug(request.form['cpf'])
-            #TODO Ver se é possível deletar (se o cliente não tem empréstimos pendentes)
-            query = f"DELETE FROM Cliente WHERE cpf = %s;"
-            params = (request.form.get('cpf'),)
-            execute_query(query, params)
-            logging.debug('Cliente deletado')
-
-            query = f'SELECT * FROM Cliente WHERE cpf = %s;'
-            params = (request.form.get('cpf'),)
-            tuples = execute_query(query, params)
 
     # If method == 'GET':
     if action:
@@ -110,7 +108,7 @@ def clients_crud():
                     #                         url_for_link="clients_crud",
                     #                         action_link='update')
                 else:
-                    clients_list = get_all_registers_in_table('Cliente')
+                    clients_list = get_registers_in_table('Cliente')
                     return render_template('choose_client.html', clients=clients_list)
 
             case 'create':
@@ -120,7 +118,7 @@ def clients_crud():
                 form_title = 'Buscar cliente'
 
             case 'delete':
-                    clients_list = get_all_registers_in_table('Cliente')
+                    clients_list = get_registers_in_table('Cliente', ativo='true')
                     return render_template('choose_client.html', clients=clients_list)
 
         
@@ -131,15 +129,6 @@ def clients_crud():
     
     return render_template('clients_crud.html', crud_action=action)
 
-
-def get_all_registers_in_table(table_name: str) -> 'list[RealDictRow]':
-    query = 'SELECT * FROM ' + table_name
-    logging.debug(query)
-    # params = (table_name,)
-    tuples = execute_query(query)
-    logging.debug(tuples)
-
-    return tuples
 
 @app.route('/authors-crud/', methods=['GET', 'POST'])
 def authors_crud():
@@ -184,10 +173,9 @@ def authors_crud():
             return redirect('/authors-crud/')
 
         elif action == 'read':
-            authors_info = request.form
-            query = f'SELECT * FROM Autor'
-            query, params = format_search_by_params_query(query, authors_info)
-            tuples = execute_query(query, params)
+            authors_info = {k:v for k, v in request.form.items() if v}
+
+            tuples = get_registers_in_table('Autor', **authors_info)
             logging.debug(f'MOSTRAREMOS OS RESULTADOS DA BUSCA POR CLIENTES: {tuples}')
             
             return render_template('authors.html', search=tuples)
@@ -223,7 +211,7 @@ def authors_crud():
                     form_title = 'Atualizar autor'
 
                 else:
-                    authors_list = get_all_registers_in_table('Autor')
+                    authors_list = get_registers_in_table('Autor')
                     return render_template('choose_author.html', authors=authors_list)
 
             case 'create':
@@ -233,7 +221,7 @@ def authors_crud():
                 form_title = 'Buscar autor'
 
             case 'delete':
-                    authors_list = get_all_registers_in_table('Autor')
+                    authors_list = get_registers_in_table('Autor')
                     return render_template('choose_author.html', authors=authors_list)
 
         
@@ -288,10 +276,9 @@ def publishers_crud():
             return redirect('/publishers-crud/')
 
         elif action == 'read':
-            publishers_info = request.form
-            query = f'SELECT * FROM Editora'
-            query, params = format_search_by_params_query(query, publishers_info)
-            tuples = execute_query(query, params)
+            publishers_info = {k: v for k, v in request.form.items() if v}
+            tuples = get_registers_in_table('Editora', **publishers_info)
+
             logging.debug(f'MOSTRAREMOS OS RESULTADOS DA BUSCA POR EDITORA: {tuples}')
             
             return render_template('publishers.html', search=tuples)
@@ -324,7 +311,7 @@ def publishers_crud():
                     form_title = 'Atualizar editora'
 
                 else:
-                    publishers_list = get_all_registers_in_table('Editora')
+                    publishers_list = get_registers_in_table('Editora')
                     return render_template('choose_publisher.html', publishers=publishers_list)
 
             case 'create':
@@ -334,7 +321,7 @@ def publishers_crud():
                 form_title = 'Buscar editora'
 
             case 'delete':
-                    publishers_list = get_all_registers_in_table('Editora')
+                    publishers_list = get_registers_in_table('Editora')
                     return render_template('choose_publisher.html', publishers=publishers_list)
 
         
@@ -388,10 +375,9 @@ def genres_crud():
             return redirect('/genres-crud/')
 
         elif action == 'read':
-            genres_info = request.form
-            query = f'SELECT * FROM Genero'
-            query, params = format_search_by_params_query(query, genres_info)
-            tuples = execute_query(query, params)
+            genres_info = {k: v for k, v in request.form.items()}
+            tuples = get_registers_in_table('Genero', **genres_info)
+
             logging.debug(f'MOSTRAREMOS OS RESULTADOS DA BUSCA POR GENERO: {tuples}')
             
             return render_template('genres.html', search=tuples)
@@ -425,7 +411,7 @@ def genres_crud():
                     form_title = 'Atualizar genero'
 
                 else:
-                    genres_list = get_all_registers_in_table('Genero')
+                    genres_list = get_registers_in_table('Genero')
                     logging.debug(genres_list)
                     return render_template('choose_genre.html', genres=genres_list)
 
@@ -436,7 +422,7 @@ def genres_crud():
                 form_title = 'Buscar genero'
 
             case 'delete':
-                    genres_list = get_all_registers_in_table('Genero')
+                    genres_list = get_registers_in_table('Genero')
                     logging.debug(genres_list)
                     return render_template('choose_genre.html', genres=genres_list)
 
@@ -449,28 +435,28 @@ def genres_crud():
     return render_template('genres_crud.html', crud_action=action)
 
 
-def format_search_by_params_query(base_query: str, info: dict[str | str]) -> str | tuple:
-    """
-    Function to format some SELECT search to READ action on CRUD
+# def format_search_by_params_query(base_query: str, info: dict[str | str]) -> str | tuple:
+#     """
+#     Function to format some SELECT search to READ action on CRUD
 
-    :param query: the base SELECT query
-    :param info: dict containing the columns name as keys and search values as values
+#     :param query: the base SELECT query
+#     :param info: dict containing the columns name as keys and search values as values
 
-    eg. {'cpf': '00083993456', 'nome': None}
+#     eg. {'cpf': '00083993456', 'nome': None}
 
-    :return query and params: query and params, ready to bbe executed by cursor
-    """
-    conditions, params = [], []
-    for k, v in info.items():
-        if v:
-            conditions.append(f'{k} = %s')
-            params.append(v)
+#     :return query and params: query and params, ready to bbe executed by cursor
+#     """
+#     conditions, params = [], []
+#     for k, v in info.items():
+#         if v:
+#             conditions.append(f'{k} = %s')
+#             params.append(v)
     
-    if conditions:
-        base_query += ' WHERE '
-        base_query += " AND ".join(conditions)
+#     if conditions:
+#         base_query += ' WHERE '
+#         base_query += " AND ".join(conditions)
 
-    return base_query, tuple(params)
+#     return base_query, tuple(params)
     
     
 

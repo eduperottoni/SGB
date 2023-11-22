@@ -37,8 +37,8 @@ CREATE TABLE Cliente
  cpf CHAR(11) PRIMARY KEY,  -- Alterei de CHAR para VARCHAR e defini o tamanho n
  nome VARCHAR(50) NOT NULL,
  data_nascimento DATE,
- data_registro DATE NOT NULL
---  ativo BOOLEAN DEFAULT true;
+ data_registro DATE NOT NULL,
+ ativo BOOLEAN DEFAULT true
 );
 
 CREATE TABLE Autor 

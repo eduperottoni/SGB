@@ -228,6 +228,60 @@ INSERT INTO Historico (data_aluguel, data_devolucao, valor_pago, cliente, livro)
     ('2022-06-08', NULL, 21.00, '01234987654', 30);
 
 
+INSERT INTO Genero (nome, descricao) VALUES
+('Ficção Científica', 'Livros que exploram mundos imaginários, avanços tecnológicos e futuros alternativos.'),
+('Fantasia', 'Obras que envolvem elementos mágicos, criaturas místicas e mundos fantásticos.'),
+('Romance', 'Narrativas centradas em relacionamentos amorosos e emocionais entre personagens.'),
+('Mistério', 'Livros que envolvem suspense, intrigas e resolução de enigmas.'),
+('Thriller', 'Narrativas emocionantes e cheias de suspense, muitas vezes relacionadas a crimes.'),
+('Não Ficção', 'Livros baseados em fatos reais, como biografias, ensaios e livros de história.'),
+('História', 'Obras que exploram eventos passados, culturas e sociedades.'),
+('Autoajuda', 'Livros focados no desenvolvimento pessoal e autoaperfeiçoamento.'),
+('Ciência', 'Livros que explicam conceitos científicos e descobertas.'),
+('Biografia', 'Histórias da vida real de pessoas famosas ou notáveis.'),
+('Aventura', 'Narrativas cheias de ação, viagens e desafios.'),
+('Horror', 'Livros que buscam provocar medo e suspense no leitor.'),
+('Poesia', 'Expressão artística por meio de versos e rimas.'),
+('Humor', 'Livros destinados a fazer o leitor rir, muitas vezes por meio de comédia.'),
+('Drama', 'Obras que exploram situações intensas e emocionais.'),
+('Filosofia', 'Livros que exploram questões filosóficas e ideias abstratas.'),
+('Educação', 'Livros que visam educar e transmitir conhecimento.'),
+('Psicologia', 'Obras que abordam temas relacionados à mente humana e comportamento.'),
+('Negócios', 'Livros sobre empreendedorismo, gestão e estratégias de negócios.');
+
+
+INSERT INTO Sobre (genero, livro) VALUES
+('Ficção Científica', 1),
+('Fantasia', 2),
+('Romance', 3),
+('Mistério', 4),
+('Thriller', 5),
+('Não Ficção', 6),
+('História', 7),
+('Autoajuda', 8),
+('Ciência', 9),
+('Biografia', 10),
+('Aventura', 11),
+('Horror', 12),
+('Poesia', 13),
+('Humor', 14),
+('Drama', 15),
+('Filosofia', 16),
+('Educação', 17),
+('Psicologia', 18),
+('Negócios', 19),
+('Ficção Científica', 20),
+('Fantasia', 21),
+('Romance', 22),
+('Mistério', 23),
+('Thriller', 24),
+('Não Ficção', 25),
+('História', 26),
+('Autoajuda', 27),
+('Ciência', 28),
+('Biografia', 29),
+('Aventura', 30);
+
 -- INSERT INTO Livros_alugados (cliente, id_historico) 
 -- SELECT 
 --     h.cliente,

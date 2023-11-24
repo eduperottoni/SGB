@@ -80,6 +80,7 @@ CREATE TABLE Escrito_por
  PRIMARY KEY (autor, livro)
 ); 
 
+
 CREATE TABLE Sobre 
 ( 
  genero VARCHAR(30) REFERENCES Genero(nome),

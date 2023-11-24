@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-{% set title='{{type}} CRUD' %}
 {% include 'head.html' %}
 <body>
     {% include 'header.html' %}
     <div class="container mt-4">
-        <h1>CRUD de {{type}}</h1>
+        <h1>CRUD de {{general_btn_name}}</h1>
 
-        <a class="crud-options" href="{{ url_for('{{type}}_crud', action='create') }}"><button class="btn btn-primary">Create Book</button></a>
-        <a class="crud-options" href="{{url_for('{{type}}_crud', action='read')}}"><button class="btn btn-primary">Read Book</button></a>
-        <a class="crud-options" href="{{url_for('{{type}}_crud', action='update')}}"><button class="btn btn-primary">Update Book</button></a>
-        <a class="crud-options" href="{{url_for('{{type}}_crud', action='delete')}}"><button class="btn btn-primary">Delete Book</button></a>
+        <a class="crud-options" href="{{url_for(url_self_crud, action='create') }}"><button class="btn btn-primary">Create {{general_btn_name}}</button></a>
+        <a class="crud-options" href="{{url_for(url_self_crud, action='read')}}"><button class="btn btn-primary">Read {{general_btn_name}}</button></a>
+        <a class="crud-options" href="{{url_for(url_self_crud, action='update')}}"><button class="btn btn-primary">Update {{general_btn_name}}</button></a>
+        <a class="crud-options" href="{{url_for(url_self_crud, action='delete')}}"><button class="btn btn-primary">Delete {{general_btn_name}}</button></a>
         
         <!-- <form action="{{ url_for('clients_crud', action='read') }}" method="post">
             <div class="form-group">

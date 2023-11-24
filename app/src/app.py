@@ -28,6 +28,7 @@ def hello():
 def books_crud():
     return book.books_crud()
 
+
 @app.route('/clients-crud/', methods=['GET', 'POST'])
 def clients_crud():
     return client.clients_crud()
@@ -129,7 +130,10 @@ def clients_crud():
                                 form_title=form_title,
                                 crud_action=action)
     
-    return render_template('clients_crud.html', crud_action=action)
+    return render_template('general_crud.html',
+                           crud_action=action,
+                           general_btn_name='Cliente',
+                           url_self_crud='clients_crud')
 
 
 @app.route('/authors-crud/', methods=['GET', 'POST'])
@@ -233,7 +237,10 @@ def authors_crud():
                                 form_title=form_title,
                                 crud_action=action)
     
-    return render_template('authors_crud.html', crud_action=action)
+    return render_template('general_crud.html',
+                           crud_action=action,
+                           general_btn_name='Author',
+                           url_self_crud='authors_crud')
 
 
 @app.route('/publishers-crud/', methods=['GET', 'POST'])
@@ -334,7 +341,10 @@ def publishers_crud():
                                 form_title=form_title,
                                 crud_action=action)
     
-    return render_template('publishers_crud.html', crud_action=action)
+    return render_template('general_crud.html',
+                           crud_action=action,
+                           general_btn_name='Publisher',
+                           url_self_crud='publishers_crud')
 
 @app.route('/genres-crud/', methods=['GET', 'POST'])
 def genres_crud():
@@ -437,7 +447,10 @@ def genres_crud():
                                 form_title=form_title,
                                 crud_action=action)
     
-    return render_template('genres_crud.html', crud_action=action)
+    return render_template('general_crud.html',
+                           crud_action=action,
+                           general_btn_name='Gênero',
+                           url_self_crud='genres_crud')
 
 
 # def format_search_by_params_query(base_query: str, info: dict[str | str]) -> str | tuple:

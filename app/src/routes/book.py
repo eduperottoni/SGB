@@ -78,18 +78,41 @@ def books_crud():
 
                     form_title = 'Atualizar Livro'
                 else:
-                    books_list = get_registers_in_table('Livro')
-                    return render_template('choose_client.html', clients=books_list)
+                    query = """
+                    SELECT 
+                    Livro.id AS livro_id, Livro.titulo AS livro_titulo, Livro.lancamento, Livro.num_copias,
+                    Autor.nome AS autor_nome,
+                    Genero.nome AS genero_nome,
+                    Editora.nome AS editora_nome
+                    FROM Livro
+                    JOIN Escrito_por ON Livro.id = Escrito_por.livro
+                    JOIN Autor ON Escrito_por.autor = Autor.id
+                    JOIN Editora ON Editora.id = Livro.editora
+                    JOIN Sobre ON Livro.id = Sobre.livro
+                    JOIN Genero ON Sobre.genero = Genero.nome
+                    """
+                    books_list = execute_query(query)
+                    logging.debug(books_list)
+
+                    return render_template('choose_book.html', books=books_list)
 
             case 'create':
                 form_title='Cadastrar Livro'
+
+                # Pega editoras para mostrar nos options dos selects
+                tuples = get_registers_in_table('Editora')
+                book_form['editoras'] = {k['id']:k['nome'] for k in tuples}
+                tuples = get_registers_in_table('Autor')
+                book_form['autores'] = {k['id']:k['nome'] for k in tuples}
+                tuples = get_registers_in_table('Genero')
+                book_form['generos'] = {k['nome']:k['descricao'] for k in tuples}
 
             case 'read':
                 form_title = 'Buscar Livro'
 
             case 'delete':
                     books_list = get_registers_in_table('Livro', ativo='true')
-                    return render_template('choose_client.html', clients=books_list)
+                    return render_template('choose_book.html', clients=books_list)
 
         
         return render_template('book_form.html',
@@ -97,4 +120,8 @@ def books_crud():
                                 form_title=form_title,
                                 crud_action=action)
     
-    return render_template('books_crud.html', crud_action=action)
+    return render_template('general_crud.html',
+                           crud_action=action,
+                           general_btn_name='Book',
+                           url_self_crud='books_crud'
+                           )

@@ -27,8 +27,8 @@ CREATE TABLE Livro
  id SERIAL PRIMARY KEY,  -- Utilize SERIAL para autoincremento em PostgreSQL
  editora INT REFERENCES Editora(id),
  num_copias INT NOT NULL DEFAULT 0,  -- Removi as aspas simples e ajustei o valor padrão
+ ativo BOOLEAN DEFAULT true,
  UNIQUE (id)
---  ativo BOOLEAN DEFAULT true;
 );
 
 -- Não apagamos clientes realmente, para manter no histórico. Válido?
@@ -60,7 +60,7 @@ CREATE TABLE Historico
 (
     id SERIAL PRIMARY KEY,
     data_aluguel DATE NOT NULL,
-    data_devolucao DATE,
+    data_devolucao DATE DEFAULT NULL,
     valor_pago FLOAT,
     cliente CHAR(11) REFERENCES Cliente(cpf),
     livro INT REFERENCES Livro(id)

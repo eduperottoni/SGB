@@ -3,7 +3,7 @@ from config import create_tables, populate_tables
 # from flask_sqlalchemy import SQLAlchemy
 from db_utils.db import execute_query
 from app_utils import get_registers_in_table
-from routes import book
+from routes import book, author, client, genre, publisher
 
 from datetime import datetime
 import logging
@@ -30,6 +30,8 @@ def books_crud():
 
 @app.route('/clients-crud/', methods=['GET', 'POST'])
 def clients_crud():
+    return client.clients_crud()
+    clients_crud()
     action = request.args.get('action')
     logging.debug(action)
     
@@ -132,6 +134,7 @@ def clients_crud():
 
 @app.route('/authors-crud/', methods=['GET', 'POST'])
 def authors_crud():
+    return author.authors_crud()
     action = request.args.get('action')
     logging.debug(action)
     
@@ -235,6 +238,7 @@ def authors_crud():
 
 @app.route('/publishers-crud/', methods=['GET', 'POST'])
 def publishers_crud():
+    return publisher.publishers_crud()
     action = request.args.get('action')
     logging.debug(action)
     
@@ -334,6 +338,7 @@ def publishers_crud():
 
 @app.route('/genres-crud/', methods=['GET', 'POST'])
 def genres_crud():
+    return genre.genres_crud()
     action = request.args.get('action')
     logging.debug(action)
     

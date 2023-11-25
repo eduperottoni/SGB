@@ -1,7 +1,7 @@
 from flask import request, render_template
 import logging
 from datetime import datetime
-
+from psycopg2 import IntegrityError
 from db_utils.db import execute_query
 from app_utils import get_registers_in_table
 
@@ -15,13 +15,74 @@ def books_crud():
         logging.debug(book_form)
     
         if action == 'create':
-            query = f'INSERT INTO Livro (id, nome, data_nascimento, data_registro) VALUES {book_form["id"], book_form["nome"], book_form["data_nascimento"], datetime.now().isoformat()}'
-            execute_query(query) 
-            
-            logging.debug('Livro criado')
-            query = f"SELECT * FROM Livro WHERE id = %s;"
-            params = (book_form["id"],)
-            logging.debug(execute_query(query, params))
+            logging.debug('Criando livro')
+            logging.debug(book_form)
+            # TODO Conferir se o livro já exite ou se está desativado
+
+            book = get_book_with_params(
+                titulo=book_form['titulo'],
+                editora=book_form['editora'],
+                lancamento=book_form['lancamento']
+            )
+
+            logging.debug(book)
+
+            # Caso haja livro com essas informações,
+            # ativá-lo e alterar o número de exemplares
+            if book:
+                logging.debug(book[0]['ativo'])
+                if book[0]['ativo'] == False:
+                    logging.debug('O LIVRO ESTÁ DESATIVADO! ATIVÁ-LO!')
+                    query = "UPDATE Livro SET ativo = %s, num_copias = %s WHERE id = %s"
+                    params= ('true', book_form['num_copias'], book[0]['id'])
+                    try:
+                        execute_query(query, params)
+                        msg = 'Livro existia e foi reativado!'
+                        success = True
+                    except Exception as e:
+                        msg = e
+                        success = False
+                    finally:
+                        return render_template(
+                            'feedback_message.html',
+                            msg = msg,
+                            action = action,
+                            success = success,
+                            try_again_link = 'books_crud'
+                        )
+
+                else:
+                    return render_template(
+                        'feedback_message.html',
+                        msg = 'Livro já está criado e é ativo!',
+                        action = action,
+                        success = False,
+                        try_again_link = 'books_crud'
+                    )
+            # Caso não exista, criar
+            else:
+                logging.debug('Livro não existe e vamos criá-lo!')
+
+                query = f"INSERT INTO Livro (titulo, lancamento, editora, num_copias) VALUES {book_form['titulo'], book_form['lancamento'], book_form['editora'], book_form['num_copias']}"
+                logging.debug(book_form)
+                params = ()
+                msg, success = '', False
+                try:
+                    execute_query(query, params)
+                    msg = 'Livro inserido com sucesso!'
+                    success = True
+                except Exception as e:
+                    logging.debug('DEU PROBLEM')
+                    msg = e
+                    success = False
+                finally:
+                    return render_template(
+                        'feedback_message.html',
+                        msg = msg,
+                        action = action,
+                        success = success,
+                        try_again_link = 'books_crud'
+                    )
 
         elif action == 'update':
             logging.debug('Vamos atualizar o Livro')
@@ -29,10 +90,10 @@ def books_crud():
 
             query = """
                 UPDATE Livro 
-                SET nome = %s, data_nascimento = %s
+                SET titulo = %s, lancamento = %s, editora = %s
                 WHERE id = %s
             """
-            values = (book_form['nome'], book_form['data_nascimento'], book_form['id'])
+            values = (book_form['titulo'], book_form['lancamento'], book_form['editora'], book_form['id'])
             execute_query(query, values)
 
             logging.debug('Livro atualizado')
@@ -90,6 +151,13 @@ def books_crud():
                     book_form = execute_query(query, params)[0]
 
                     form_title = 'Atualizar Livro'
+                    # Pega editoras para mostrar nos options dos selects
+                    tuples = get_registers_in_table('Editora')
+                    book_form['editoras'] = {k['id']:k['nome'] for k in tuples}
+                    tuples = get_registers_in_table('Autor')
+                    book_form['autores'] = {k['id']:k['nome'] for k in tuples}
+                    tuples = get_registers_in_table('Genero')
+                    book_form['generos'] = {k['nome']:k['descricao'] for k in tuples}
                 else:
                     return render_template('choose_book.html', books=books_informations)
                 
@@ -148,3 +216,15 @@ def get_all_lendings_from_book(id: int) -> 'list[RealDictRow]':
     query = "SELECT * FROM Historico WHERE livro = %s AND data_devolucao IS NULL"
     params = (id,)
     return execute_query(query, params)
+
+def get_book_with_params(**params) -> 'list[RealDictRow]':
+    logging.debug(params)
+    book = get_registers_in_table('Livro', **params)
+    logging.debug('Book reached')
+    logging.debug(book)
+    return book
+
+
+def get_autor_by_id(id: int) -> 'list[RealDictRow]':
+    author = get_registers_in_table('Autor', id=id)
+    return author

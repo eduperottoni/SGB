@@ -80,7 +80,7 @@ INSERT INTO Livro (titulo, lancamento, editora, num_copias) VALUES
 -- Chimamanda Ngozi Adichie
 INSERT INTO Livro (titulo, lancamento, editora, num_copias) VALUES
     ('Meio Sol Amarelo', '2006-08-11', 20, 90),
-    ('Americanah', '2013-05-14', 21, 70),
+    ('Americanah', '2023-11-25', 21, 70),
     ('Hibisco Roxo', '2003-01-01', 22, 50);
 
 -- Mark Twain

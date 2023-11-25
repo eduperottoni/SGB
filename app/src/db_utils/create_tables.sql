@@ -28,7 +28,8 @@ CREATE TABLE Livro
  editora INT REFERENCES Editora(id),
  num_copias INT NOT NULL DEFAULT 0,  -- Removi as aspas simples e ajustei o valor padrão
  ativo BOOLEAN DEFAULT true,
- UNIQUE (id)
+ 
+ CONSTRAINT livros_unicos UNIQUE (titulo, lancamento, editora)
 );
 
 -- Não apagamos clientes realmente, para manter no histórico. Válido?

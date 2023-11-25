@@ -2,6 +2,7 @@
 <html lang="en">
 {% include 'head.html' %}
 <body>
+    {% include 'header.html' %}
     <div class="container mt-4">
         <div class="row row-cols-1 row-cols-md-2 g-4">
             {% for book in books %}
@@ -14,9 +15,9 @@
                             <p class="card-text"><strong>Editora: </strong>{{book['editora_nome']}}</p>
                             <p class="card-text"><strong>Lançamento: </strong>{{book['lancamento']}}</p>
                             <p class="card-text"><strong>Nº cópias: </strong>{{book['num_copias']}}</p>
-                            <a style="background-color:gold;" href="{{url_for('books_crud', action='update', id=book['id'])}}" class="btn btn-primary">Update</a>
+                            <a style="background-color:gold;" href="{{url_for('books_crud', action='update', id=book['livro_id'])}}" class="btn btn-primary">Update</a>
                             
-                            <button onclick="changeInputValue('{{ book['titulo'] }}')" style="background-color:crimson;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <button onclick="changeInputValue('{{ book['livro_id'] }}', '{{ book['livro_titulo']}}')" style="background-color:crimson;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 Deletar
                             </button>
                         </div>
@@ -34,12 +35,12 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          Você quer mesmo deletar o livro <label id="titulo-info"></label>
+          Você quer mesmo deletar o livro <label id="titulo-info"></label> ?
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <form action="{{ url_for('authors_crud', action='delete') }}" method="post">
-                <input style="display: none;" id="titulo" name="titulo" value=""/>
+            <form action="{{ url_for('books_crud', action='delete') }}" method="post">
+                <input style="display: none;" id="id" name="id" value=""/>
                 <input style="background-color:crimson;" class="btn btn-primary" type="submit" value="Delete"/>
             </form>
         </div>
@@ -47,15 +48,14 @@
     </div>
   </div>
   <script>
-    function changeInputValue(value){
-        console.log(value)
+    function changeInputValue(id, titulo){
+        console.log(id)
+        console.log(titulo)
         const input = document.getElementById('titulo-info')
-        const nome_info = document.getElementById('titulo')
-        input.textContent = value
-        nome_info.value = value
+        const nome_info = document.getElementById('id')
+        input.textContent = titulo
+        nome_info.value = id
         const modal = document.getElementById('exampleModal')
-
-        modal.tabIndex = 5
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>

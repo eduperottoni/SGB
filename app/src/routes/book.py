@@ -1,8 +1,8 @@
-from flask import request, render_template
+from flask import request, render_template, redirect
 import logging
 from datetime import datetime
 from psycopg2 import IntegrityError
-from db_utils.db import execute_query
+from db_utils.utils import execute_query
 from app_utils import get_registers_in_table
 
 def books_crud():
@@ -170,7 +170,7 @@ def books_crud():
             # Pega editoras para mostrar nos options dos selects
             tuples = get_registers_in_table('Editora')
             book_form['editoras'] = {k['id']:k['nome'] for k in tuples}
-            tuples = get_registers_in_table('Autor')
+            tuples = get_registers_in_table('Autor', ativo='true')
             book_form['autores'] = {k['id']:k['nome'] for k in tuples}
             tuples = get_registers_in_table('Genero')
             book_form['generos'] = {k['nome']:k['descricao'] for k in tuples}
@@ -179,14 +179,14 @@ def books_crud():
                 form_title = 'Buscar Livro'
 
         
-        return render_template('book_form.html',
+        return render_template('form_book.html',
                                 book_form=book_form,
                                 form_title=form_title,
                                 crud_action=action)
     
     return render_template('general_crud.html',
                            crud_action=action,
-                           general_btn_name='Book',
+                           general_btn_name='livro',
                            url_self_crud='books_crud'
                            )
 

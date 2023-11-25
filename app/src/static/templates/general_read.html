@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+{% include 'head.html' %}
+<body>
+    {% include 'head.html' %}
+    <div class="container mt-4">
+        {% if response_list %}
+        <table class="table table-dark">
+            <thead>
+              <tr>
+                {% for key in keys_to_consider %}
+                <th scope="col">{{key}}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+                {% for row in response_list %}
+                <tr>
+                    {% for key in keys_to_consider %}
+                    <td>{{row[key]}}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <div class="alert alert-danger" role="alert">
+                Nenhum(a) {{entity}} encontrado(a). <a href="{{url_for(try_again_link, action='read')}}" class="alert-link">Tente novamente</a>.
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

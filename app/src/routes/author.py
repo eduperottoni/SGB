@@ -1,15 +1,17 @@
-from flask import request, render_template
+from flask import request, render_template, redirect
 import logging
+from psycopg2.errors import UniqueViolation
 from datetime import datetime
 
-from db_utils.db import execute_query
+from db_utils.utils import execute_query
 from app_utils import get_registers_in_table
 
 def authors_crud():
     action = request.args.get('action')
     logging.debug(action)
-    
+
     if request.method == 'POST':
+        msg, success = '', False
         logging.debug('ISSO FOI UM POST')
         if action in ['create', 'update']:
             author_form = request.form
@@ -17,12 +19,33 @@ def authors_crud():
 
             if action == 'create':
                 query = f'INSERT INTO Autor (nome, biografia, data_nascimento) VALUES {author_form["nome"], author_form["biografia"], author_form["data_nascimento"]}'
-                execute_query(query) 
-                
-                logging.debug('Autor criado')
-                query = f"SELECT * FROM Autor WHERE nome = %s;"
-                params = (author_form["nome"],)
-                logging.debug(execute_query(query, params))
+
+                try:
+                    execute_query(query)
+                    # Just for test pouposes:
+                    query = f"SELECT * FROM Autor WHERE nome = %s;"
+                    params = (author_form["nome"],)
+                    logging.debug(execute_query(query, params))
+                    msg = 'Autor criado com sucesso!'
+                    success = True
+                except UniqueViolation:
+                    query = """
+                    UPDATE Autor
+                    SET ativo = %s
+                    WHERE nome = %s AND biografia = %s AND data_nascimento = %s;
+                    """
+                    params = ('true', author_form["nome"], author_form["biografia"], author_form["data_nascimento"])
+                    execute_query(query, params)
+                    # Just for test pouposes:
+                    # query = f"SELECT * FROM Autor WHERE nome = %s;"
+                    # params = (author_form["nome"],)
+                    # logging.debug(execute_query(query, params))
+                    msg = 'Autor existia e foi reativado!'
+                    success = True
+                except Exception as e:
+                    msg = f'Erro ao criar autor! {e}'
+                    success = False
+
 
             elif action == 'update':
                 logging.debug('Vamos atualizar o autor')
@@ -34,39 +57,61 @@ def authors_crud():
                     WHERE id = %s
                 """
                 values = (author_form["nome"], author_form["biografia"], author_form["data_nascimento"], author_form['id'])
-                execute_query(query, values)
-
-                logging.debug('Autor atualizado')
-                query = f"SELECT * FROM Autor WHERE nome = %s;"
-                params = (author_form["nome"],)
-                logging.debug(execute_query(query, params))
-
-            elif action == 'delete':
-                return render_template()
                 
-            return redirect('/authors-crud/')
+                try:
+                    execute_query(query, values)
+                    msg = 'Autor atualizado com sucesso!'
+                    success = True
+                    # Test
+                    # query = f"SELECT * FROM Autor WHERE nome = %s;"
+                    # params = (author_form["nome"],)
+                    # logging.debug(execute_query(query, params))
+                except Exception as e:
+                    msg = f'Erro ao atulizar autor! {e}'
+                    success = False
+
 
         elif action == 'read':
             authors_info = {k:v for k, v in request.form.items() if v}
 
-            tuples = get_registers_in_table('Autor', **authors_info)
-            logging.debug(f'MOSTRAREMOS OS RESULTADOS DA BUSCA POR CLIENTES: {tuples}')
-            
-            return render_template('authors.html', search=tuples)
+            try:
+                tuples = get_registers_in_table('Autor', **authors_info)
+                return render_template('general_read.html',
+                                   response_list=tuples,
+                                   keys_to_consider=[key for key in tuples[0]],
+                                   entity='autor',
+                                   try_again_link='authors_crud')
+            except Exception as e:
+                msg = 'Erro ao ler cliente'
+                success = False            
         
-        elif action == 'delete':
-            logging.debug('Nome')
-            logging.debug(request.form)
-            logging.debug(request.form['nome'])
-            #TODO Ver se é possível deletar (se o authore não tem empréstimos pendentes)
-            query = f"DELETE FROM Autor WHERE nome = %s;"
-            params = (request.form.get('nome'),)
-            execute_query(query, params)
-            logging.debug('Autor deletado')
 
-            query = f'SELECT * FROM Autor WHERE nome = %s;'
-            params = (request.form.get('nome'),)
-            tuples = execute_query(query, params)
+        elif action == 'delete':
+            logging.debug(request.form)
+
+            try:
+                query = "UPDATE Autor SET ativo = %s WHERE id = %s;"
+                params = ('false', request.form.get('id'),)
+                execute_query(query, params)
+                logging.debug('Autor deletado')
+
+                #Test
+                query = f'SELECT * FROM Autor WHERE id = %s;'
+                params = (request.form.get('id'),)
+                tuples = execute_query(query, params)
+
+                msg='Autor deletado com sucesso'
+                success=True
+            except:
+                msg='Erro ao deletar autor'
+                success=False
+            
+
+        return render_template('feedback_message.html',
+                                msg = msg,
+                                action = action,
+                                success = success,
+                                try_again_link = 'authors_crud')
             
 
     # If method == 'GET':
@@ -95,17 +140,17 @@ def authors_crud():
                 form_title = 'Buscar autor'
 
             case 'delete':
-                    authors_list = get_registers_in_table('Autor')
+                    authors_list = get_registers_in_table('Autor', ativo='true')
                     return render_template('choose_author.html', authors=authors_list)
 
         
-        return render_template('author_form.html',
+        return render_template('form_author.html',
                                 author_form=author_form,
                                 form_title=form_title,
                                 crud_action=action)
     
     return render_template('general_crud.html',
                            crud_action=action,
-                           general_btn_name='Book',
+                           general_btn_name='autor',
                            url_self_crud='authors_crud'
                            )

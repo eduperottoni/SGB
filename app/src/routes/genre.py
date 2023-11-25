@@ -1,8 +1,8 @@
-from flask import request, render_template
+from flask import request, render_template, redirect
 import logging
 from datetime import datetime
 
-from db_utils.db import execute_query
+from db_utils.utils import execute_query
 from app_utils import get_registers_in_table
 
 def genres_crud():
@@ -99,13 +99,13 @@ def genres_crud():
                     return render_template('choose_genre.html', genres=genres_list)
 
         
-        return render_template('genre_form.html',
+        return render_template('form_genre.html',
                                 genre_form=genre_form,
                                 form_title=form_title,
                                 crud_action=action)
     
     return render_template('general_crud.html',
                            crud_action=action,
-                           general_btn_name='Genre',
+                           general_btn_name='Gênero',
                            url_self_crud='genres_crud'
                            )

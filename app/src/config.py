@@ -1,4 +1,4 @@
-from db_utils.db import connect_and_execute_sql
+from db_utils.utils import connect_and_execute_sql
 import logging
 
 def create_tables():

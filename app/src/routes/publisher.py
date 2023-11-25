@@ -1,8 +1,8 @@
-from flask import request, render_template
+from flask import request, render_template, redirect
 import logging
 from datetime import datetime
 
-from db_utils.db import execute_query
+from db_utils.utils import execute_query
 from app_utils import get_registers_in_table
 
 def publishers_crud():
@@ -96,13 +96,13 @@ def publishers_crud():
                     return render_template('choose_publisher.html', publishers=publishers_list)
 
         
-        return render_template('publisher_form.html',
+        return render_template('form_publisher.html',
                                 publisher_form=publisher_form,
                                 form_title=form_title,
                                 crud_action=action)
     
     return render_template('general_crud.html',
                            crud_action=action,
-                           general_btn_name='Publisher',
+                           general_btn_name='editora',
                            url_self_crud='publishers_crud'
                            )

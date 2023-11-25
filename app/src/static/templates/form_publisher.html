@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 {% set title='Publishers Form' %}
 {% include 'head.html' %}
 <body>
@@ -16,13 +16,26 @@
                 class="form-control"
                 id="id" name="id"
                 {% if crud_action != 'read' %}required{% endif %}
-                {% if crud_action == 'update' %}disabled{% endif %}>
+                
+                {% if crud_action in ['update', 'create'] %}
+                        disabled
+                {% endif %}
+                {% if crud_action == 'create' %}
+                    placeholder = "O ID é automaticamente gerado"
+                {% endif %}/>
         </div>
 
         <div class="form-group">
             <label for="nome">Nome da editora:</label>
             <input 
-                value="{{ publisher_form['nome'] }}" type="text" class="form-control" id="nome" name="nome" {% if crud_action != 'read' %}required{% endif %}>
+                value="{{ publisher_form['nome'] }}" 
+                type="text"
+                class="form-control"
+                id="nome"
+                name="nome"
+                {% if crud_action != 'read' %}required{% endif %}
+                {% if crud_action == 'update' %}disabled{% endif %}
+            >
         </div>
 
         <div class="form-group">

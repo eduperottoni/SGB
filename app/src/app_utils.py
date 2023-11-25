@@ -1,5 +1,5 @@
 import logging
-from db_utils.db import execute_query
+from db_utils.utils import execute_query
 
 def get_registers_in_table(table_name: str, **extra_specification) -> 'list[RealDictRow]':
     """

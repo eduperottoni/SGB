@@ -1,6 +1,6 @@
-from flask import request, render_template
+from flask import request, render_template, redirect
 import logging
-from db_utils.db import execute_query
+from db_utils.utils import execute_query
 
 def get_clients_with_0_rents():
     query = """

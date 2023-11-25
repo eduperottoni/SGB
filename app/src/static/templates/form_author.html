@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 {% set title='Authors Form' %}
 {% include 'head.html' %}
 <body>
@@ -8,6 +8,7 @@
     <h1 class="mb-4">{{ form_title }}</h1>
     
     <form action="{{ url_for('authors_crud', action=crud_action) }}" method="post">
+        {% if crud_action != 'create' %}
         <div class="form-group">
             <label for="id">ID do Autor:</label>
             <input 
@@ -15,9 +16,15 @@
                 type="text"
                 class="form-control"
                 id="id" name="id"
-                {% if crud_action != 'read' %}required{% endif %}
-                {% if crud_action == 'update' %}disabled{% endif %}>
+                {% if crud_action !='read' %}required{% endif %}
+                {% if crud_action in ['update', 'create'] %}
+                disabled
+                {% endif %}
+                {% if crud_action == 'create' %}
+                placeholder = "O ID é automaticamente gerado"
+                {% endif %}>
         </div>
+        {% endif %}
     
         <div class="form-group">
             <label for="nome">Nome do autor:</label>
@@ -45,6 +52,5 @@
         document.getElementById('id').disabled = false;
     }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>

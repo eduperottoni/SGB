@@ -16,7 +16,9 @@ CREATE TABLE Editora
  id SERIAL PRIMARY KEY,
  nome VARCHAR(30) NOT NULL,
  endereco VARCHAR(75),
- contato VARCHAR(20) NOT NULL
+ contato VARCHAR(20) NOT NULL,
+
+ CONSTRAINT editoras_unicas UNIQUE (nome, endereco, contato)
 ); 
 
 -- Não apagamos livros realmente, para manter no histórico. Válido?
@@ -47,7 +49,10 @@ CREATE TABLE Autor
  id SERIAL PRIMARY KEY,
  nome VARCHAR(50) NOT NULL,
  biografia VARCHAR(300),
- data_nascimento DATE NOT NULL
+ data_nascimento DATE NOT NULL,
+ ativo BOOLEAN DEFAULT true,
+
+ CONSTRAINT autores_unicos UNIQUE (nome, biografia, data_nascimento)
 ); 
 
 CREATE TABLE Genero 

@@ -1,8 +1,8 @@
-from flask import request, render_template
+from flask import request, render_template, redirect
 import logging
 from datetime import datetime
 
-from db_utils.db import execute_query
+from db_utils.utils import execute_query
 from app_utils import get_registers_in_table
 
 def clients_crud():
@@ -98,13 +98,13 @@ def clients_crud():
                     return render_template('choose_client.html', clients=clients_list)
 
         
-        return render_template('client_form.html',
+        return render_template('form_client.html',
                                 client_form=client_form,
                                 form_title=form_title,
                                 crud_action=action)
     
     return render_template('general_crud.html',
                            crud_action=action,
-                           general_btn_name='Client',
+                           general_btn_name='cliente',
                            url_self_crud='clients_crud'
                            )

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 {% set title='genres Form' %}
 {% include 'head.html' %}
 <body>
@@ -9,7 +9,7 @@
     
     <form action="{{ url_for('genres_crud', action=crud_action) }}" method="post">
         <div class="form-group">
-            <label for="cpf">Nome do gênero:</label>
+            <label for="name">Nome do gênero:</label>
             <input 
                 value="{{ genre_form['nome'] }}" type="text" class="form-control" id="nome" name="nome" maxlenght="30" {% if crud_action != 'read' %}required{% endif %}>
         </div>

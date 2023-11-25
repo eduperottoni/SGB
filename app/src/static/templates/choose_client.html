@@ -1,23 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 {% include 'head.html' %}
 <body>
-    {% include 'header.html' %}
+  {% include 'header.html' %}
     <div class="container mt-4">
         <div class="row row-cols-1 row-cols-md-2 g-4">
-            {% for book in books %}
+            {% for client in clients %}
                 <div class="col">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">{{book['livro_titulo']}}</h5>
-                            <p class="card-text"><strong>Gênero: </strong>{{book['genero_nome']}}</p>
-                            <p class="card-text"><strong>Autor: </strong>{{book['autor_nome']}}</p>
-                            <p class="card-text"><strong>Editora: </strong>{{book['editora_nome']}}</p>
-                            <p class="card-text"><strong>Lançamento: </strong>{{book['lancamento']}}</p>
-                            <p class="card-text"><strong>Nº cópias: </strong>{{book['num_copias']}}</p>
-                            <a style="background-color:gold;" href="{{url_for('books_crud', action='update', id=book['livro_id'])}}" class="btn btn-primary">Update</a>
+                            <h5 class="card-title">{{client['nome']}}</h5>
+                            <p class="card-text"><strong>CPF:</strong>{{client['cpf']}}</p>
+                            <p class="card-text"><strong>Data Nascimento:</strong>{{client['data_nascimento']}}</p>
+                            <a style="background-color:gold;" href="{{url_for('clients_crud', action='update', cpf=client['cpf'])}}" class="btn btn-primary">Update</a>
                             
-                            <button onclick="changeInputValue('{{ book['livro_id'] }}', '{{ book['livro_titulo']}}')" style="background-color:crimson;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <button onclick="changeInputValue('{{ client['cpf'] }}')" style="background-color:crimson;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 Deletar
                             </button>
                         </div>
@@ -35,12 +32,12 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          Você quer mesmo deletar o livro <label id="titulo-info"></label> ?
+          Você quer mesmo deletar o usuário de CPF <label id="cpf-info"></label>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <form action="{{ url_for('books_crud', action='delete') }}" method="post">
-                <input style="display: none;" id="id" name="id" value=""/>
+            <form action="{{ url_for('clients_crud', action='delete') }}" method="post">
+                <input style="display: none;" id="cpf" name="cpf" value=""/>
                 <input style="background-color:crimson;" class="btn btn-primary" type="submit" value="Delete"/>
             </form>
         </div>
@@ -48,14 +45,15 @@
     </div>
   </div>
   <script>
-    function changeInputValue(id, titulo){
-        console.log(id)
-        console.log(titulo)
-        const input = document.getElementById('titulo-info')
-        const nome_info = document.getElementById('id')
-        input.textContent = titulo
-        nome_info.value = id
+    function changeInputValue(value){
+        console.log(value)
+        const input = document.getElementById('cpf-info')
+        const cpf_info = document.getElementById('cpf')
+        input.textContent = value
+        cpf_info.value = value
         const modal = document.getElementById('exampleModal')
+
+        modal.tabIndex = 5
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>

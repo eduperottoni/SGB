@@ -1,19 +1,17 @@
 from flask import Flask, render_template, request, redirect
 from config import create_tables, populate_tables
-# from flask_sqlalchemy import SQLAlchemy
-from db_utils.db import execute_query
-from app_utils import get_registers_in_table
+from db_utils.utils import execute_query
 from routes import book, author, client, genre, publisher, clients_with_no_rents, rented_books, top_5_clients, book_by_author
-
 
 from datetime import datetime
 import logging
+
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s | %(levelname)s: %(message)s')
 
 app = Flask(
     __name__,
-    template_folder='static')
+    template_folder='static/templates')
 
 
 @app.route('/')

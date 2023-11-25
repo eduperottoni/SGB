@@ -101,4 +101,8 @@ def publishers_crud():
                                 form_title=form_title,
                                 crud_action=action)
     
-    return render_template('publishers_crud.html', crud_action=action)
+    return render_template('general_crud.html',
+                           crud_action=action,
+                           general_btn_name='Publisher',
+                           url_self_crud='publishers_crud'
+                           )

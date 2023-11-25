@@ -7,10 +7,19 @@ def get_book_by_author(author_name = None):
         author_name = request.form.get('author_name')
         
         if author_name:
-            query =f"SELECT Livro.titulo FROM Autor JOIN Escrito_por ON Autor.id = Escrito_por.autor JOIN Livro ON Escrito_por.livro = Livro.id WHERE Autor.nome = '{author_name}'"
-            tuples = execute_query(query)
-            logging.debug(tuples)
-            logging.debug('pesquisa feita')
-            return render_template('books_list.html', liste=tuples)
+            query = """
+            SELECT Livro.titulo 
+            FROM Autor 
+            JOIN Escrito_por ON Autor.id = Escrito_por.autor 
+            JOIN Livro ON Escrito_por.livro = Livro.id 
+            WHERE Autor.nome = %s
+            """
+            params = (author_name, )
+            tuples = execute_query(query, params)
+            keys_to_consider = ['titulo']
+            return render_template('special_queries_response.html', 
+                    response_list=tuples, 
+                    keys_to_consider=keys_to_consider,
+                    title=f"Livros de {author_name}")
 
-    return render_template('busca_por_autor.html')
+    return render_template('search_book_by_author.html')

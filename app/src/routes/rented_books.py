@@ -3,7 +3,16 @@ import logging
 from db_utils.db import execute_query
 
 def get_rented_books():
-    query = "SELECT Livro.titulo AS Livro, Cliente.nome AS Cliente, Historico.data_aluguel AS Historico FROM Livro JOIN Historico ON Livro.ID = Historico.livro JOIN Cliente ON Historico.cliente = Cliente.cpf WHERE Historico.data_devolucao IS NULL"
+    query = """
+    SELECT Livro.titulo AS livro, Cliente.nome AS cliente, Historico.data_aluguel AS data
+    FROM Livro 
+    JOIN Historico ON Livro.ID = Historico.livro 
+    JOIN Cliente ON Historico.cliente = Cliente.cpf 
+    WHERE Historico.data_devolucao IS NULL
+    """
     tuples = execute_query(query)
-    logging.debug(tuples)
-    return render_template('rented_books.html', liste=tuples)
+    keys_to_consider = ['livro', 'cliente', 'data']
+    return render_template('special_queries_response.html', 
+                        response_list=tuples, 
+                        keys_to_consider=keys_to_consider,
+                        title="Livros não devolvidos")

@@ -103,4 +103,8 @@ def clients_crud():
                                 form_title=form_title,
                                 crud_action=action)
     
-    return render_template('clients_crud.html', crud_action=action)
+    return render_template('general_crud.html',
+                           crud_action=action,
+                           general_btn_name='Client',
+                           url_self_crud='clients_crud'
+                           )

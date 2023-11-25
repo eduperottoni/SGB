@@ -104,4 +104,8 @@ def authors_crud():
                                 form_title=form_title,
                                 crud_action=action)
     
-    return render_template('authors_crud.html', crud_action=action)
+    return render_template('general_crud.html',
+                           crud_action=action,
+                           general_btn_name='Book',
+                           url_self_crud='authors_crud'
+                           )

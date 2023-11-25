@@ -104,4 +104,8 @@ def genres_crud():
                                 form_title=form_title,
                                 crud_action=action)
     
-    return render_template('genres_crud.html', crud_action=action)
+    return render_template('general_crud.html',
+                           crud_action=action,
+                           general_btn_name='Genre',
+                           url_self_crud='genres_crud'
+                           )

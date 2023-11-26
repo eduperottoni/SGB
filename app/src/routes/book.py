@@ -98,10 +98,6 @@ def books_crud():
                 """
                 values = (book_form['titulo'], book_form['lancamento'], book_form['editora'], book_form['genero'], book_form['num_copias'], book_form['id'])
                 execute_query(query, values)
-                # Test
-                # query = f"SELECT * FROM Livro WHERE id = %s;"
-                # params = (book_form["id"],)
-                # logging.debug(execute_query(query, params))
 
                 msg, success = f'Sucesso ao atualizar o livro {book_form["titulo"]}!', True
             except Exception as e:
@@ -142,7 +138,6 @@ def books_crud():
             form = request.form
             livro = form['id']
 
-            #1 - Deletamos os escritores dos livros
             query = """
             DELETE FROM Escrito_por
             WHERE livro = %s
@@ -150,7 +145,6 @@ def books_crud():
             params = (livro,)
             execute_query(query, params)
 
-            #2 - Adicionamos os 
             for k in form:
                 if k != 'id':
                     logging.debug(f'iremos adicionar autor {k} ao livro {form["id"]}')
@@ -162,14 +156,7 @@ def books_crud():
                         execute_query(query, params)
                         msg = 'Sucesso ao adicionar/remover autor(es)!'
                         success = True
-                        # Test
-                        # query = """
-                        # SELECT *
-                        # FROM Escrito_por
-                        # WHERE livro = %s
-                        # """
-                        # params = (form['id'],)
-                        # logging.debug(execute_query(query, params))
+
                     except Exception as e:
                         logging.debug(e)
                         msg = f'Erro ao adicionar autor! {e}!'
@@ -193,10 +180,8 @@ def books_crud():
                     tuples = get_registers_in_table('Autor', ativo = 'true')
                     book_form['autores_totais'] = {k['id']:k['nome'] for k in tuples}
                     id = request.args.get('id')
-                    logging.debug(book_form)
                     tuples = get_registers_in_table('Escrito_por', livro=id)
                     book_form['autores_livro'] = [k['autor']for k in tuples]
-                    logging.debug(book_form)
                     return render_template('form_authors_in_book.html',
                                             book_form=book_form,
                                             form_title='Modificar autores do livro',
@@ -209,7 +194,6 @@ def books_crud():
                     book_form = execute_query(query, params)[0]
 
                     form_title = 'Atualizar Livro'
-                    # Pega editoras para mostrar nos options dos selects
                     tuples = get_registers_in_table('Editora', ativo='true')
                     book_form['editoras'] = {k['id']:k['nome'] for k in tuples}
                     tuples = get_registers_in_table('Autor', ativo='true')
@@ -224,7 +208,6 @@ def books_crud():
         elif action == 'create':
             form_title='Cadastrar Livro'
 
-            # Pega editoras para mostrar nos options dos selects
             tuples = get_registers_in_table('Editora', ativo='true')
             book_form['editoras'] = {k['id']:k['nome'] for k in tuples}
             tuples = get_registers_in_table('Autor', ativo='true')
@@ -234,7 +217,6 @@ def books_crud():
 
         elif action == 'read':
             form_title = 'Buscar Livro'
-            # Pega editoras para mostrar nos options dos selects
             tuples = get_registers_in_table('Editora')
             book_form['editoras'] = {k['id']:k['nome'] for k in tuples}
             tuples = get_registers_in_table('Autor')

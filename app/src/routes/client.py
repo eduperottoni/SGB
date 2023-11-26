@@ -12,14 +12,13 @@ def clients_crud():
     
     if request.method == 'POST':
         msg, success = '', False
-        logging.debug('ISSO FOI UM POST')
         client_form = request.form
     
         if action == 'create':
             query = f'INSERT INTO Cliente (cpf, nome, data_nascimento, data_registro) VALUES {client_form["cpf"], client_form["nome"], client_form["data_nascimento"], datetime.now().isoformat()}'
             
             try:
-                execute_query(query) 
+                execute_query(query)
                 
                 logging.debug('Cliente criado')
                 query = f"SELECT * FROM Cliente WHERE cpf = %s;"
@@ -57,10 +56,6 @@ def clients_crud():
             try:
                 execute_query(query, values)
 
-                # logging.debug('Cliente atualizado')
-                # query = f"SELECT * FROM Cliente WHERE cpf = %s;"
-                # params = (client_form["cpf"],)
-                # logging.debug(execute_query(query, params))
                 msg = 'Cliente atualizado com sucesso!'
                 success = True
             except Exception as e:
@@ -119,11 +114,7 @@ def clients_crud():
                     client_form = execute_query(query, params)[0]
 
                     form_title = 'Atualizar cliente'
-                    # except Exception as e:
-                    #     return render_template('error.html',
-                    #                         msg="Erro ao recuperar o CPF especificado",
-                    #                         url_for_link="clients_crud",
-                    #                         action_link='update')
+
                 else:
                     clients_list = get_registers_in_table('Cliente')
                     return render_template('choose_client.html', clients=clients_list)

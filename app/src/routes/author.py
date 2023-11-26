@@ -12,7 +12,6 @@ def authors_crud():
 
     if request.method == 'POST':
         msg, success = '', False
-        logging.debug('ISSO FOI UM POST')
         if action in ['create', 'update']:
             author_form = request.form
             logging.debug(f'Vamos cadastrar/atualizar um autor: {author_form["nome"]}')
@@ -22,7 +21,6 @@ def authors_crud():
 
                 try:
                     execute_query(query)
-                    # Just for test pouposes:
                     query = f"SELECT * FROM Autor WHERE nome = %s;"
                     params = (author_form["nome"],)
                     logging.debug(execute_query(query, params))
@@ -36,10 +34,6 @@ def authors_crud():
                     """
                     params = ('true', author_form["nome"], author_form["biografia"], author_form["data_nascimento"])
                     execute_query(query, params)
-                    # Just for test pouposes:
-                    # query = f"SELECT * FROM Autor WHERE nome = %s;"
-                    # params = (author_form["nome"],)
-                    # logging.debug(execute_query(query, params))
                     msg = 'Autor existia e foi reativado!'
                     success = True
                 except Exception as e:
@@ -62,10 +56,7 @@ def authors_crud():
                     execute_query(query, values)
                     msg = 'Autor atualizado com sucesso!'
                     success = True
-                    # Test
-                    # query = f"SELECT * FROM Autor WHERE nome = %s;"
-                    # params = (author_form["nome"],)
-                    # logging.debug(execute_query(query, params))
+
                 except Exception as e:
                     msg = f'Erro ao atulizar autor! {e}'
                     success = False
@@ -87,18 +78,11 @@ def authors_crud():
         
 
         elif action == 'delete':
-            logging.debug(request.form)
 
             try:
                 query = "UPDATE Autor SET ativo = %s WHERE id = %s;"
                 params = ('false', request.form.get('id'),)
                 execute_query(query, params)
-                logging.debug('Autor deletado')
-
-                #Test
-                # query = f'SELECT * FROM Autor WHERE id = %s;'
-                # params = (request.form.get('id'),)
-                # tuples = execute_query(query, params)
 
                 msg='Autor deletado com sucesso'
                 success=True

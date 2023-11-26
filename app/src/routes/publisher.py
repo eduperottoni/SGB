@@ -10,7 +10,6 @@ def publishers_crud():
     logging.debug(action)
     
     if request.method == 'POST':
-        logging.debug('ISSO FOI UM POST')
         msg, success = '', False
 
         if action in ['create', 'update']:
@@ -24,11 +23,6 @@ def publishers_crud():
                     execute_query(query) 
                     success, msg = True, 'Editora inserida com sucesso!'
                     
-                    #Test
-                    # logging.debug('Editora criada')
-                    # query = f"SELECT * FROM Editora WHERE nome = %s;"
-                    # params = (publishers_form["nome"],)
-                    # logging.debug(execute_query(query, params))
                 except UniqueViolation:
                     query = """
                     UPDATE Editora
@@ -37,10 +31,7 @@ def publishers_crud():
                     """
                     params = ('true', publishers_form["nome"], publishers_form["endereco"], publishers_form["contato"])
                     execute_query(query, params)
-                    # Just for test pouposes:
-                    # query = f"SELECT * FROM Autor WHERE nome = %s;"
-                    # params = (author_form["nome"],)
-                    # logging.debug(execute_query(query, params))
+
                     msg = 'Editora existia e foi reativada!'
                     success = True
                 except Exception as e:
@@ -62,11 +53,6 @@ def publishers_crud():
                     execute_query(query, values)
                     success, msg = True, 'Editora modificada com sucesso!'
 
-                    #Test
-                    # logging.debug('Editora atualizada')
-                    # query = f"SELECT * FROM Editora WHERE nome = %s;"
-                    # params = (publishers_form["nome"],)
-                    # logging.debug(execute_query(query, params))
                 except Exception as e:
                     success, msg = False, f'Erro ao modificar editora! {e}'
 
@@ -93,10 +79,6 @@ def publishers_crud():
                 execute_query(query, params)
                 logging.debug('Editora deletada')
 
-                #Test
-                # query = f'SELECT * FROM Editora WHERE nome = %s;'
-                # params = (request.form.get('nome'),)
-                # tuples = execute_query(query, params)
                 success, msg = True, 'Editora deletada com sucesso!'
             except Exception as e:
                 success, msg = False, f'Erro em deletar a editora! {e}'

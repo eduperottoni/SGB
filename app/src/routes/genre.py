@@ -12,7 +12,6 @@ def genres_crud():
     
     if request.method == 'POST':
         msg, success = '', False
-        logging.debug('ISSO FOI UM POST')
         if action in ['create', 'update']:
             genres_form = request.form
             logging.debug(f'Vamos cadastrar/atualizar um genero: {genres_form["nome"]}')
@@ -25,10 +24,7 @@ def genres_crud():
                     execute_query(query)
                     msg = 'Genero adicionado com sucesso'
                     success = True
-                    # logging.debug('Genero criado')
-                    # query = f"SELECT * FROM Genero WHERE nome = %s;"
-                    # params = (genres_form["nome"],)
-                    # logging.debug(execute_query(query, params))
+
                 except UniqueViolation:
                     query="""
                     UPDATE Genero
@@ -60,10 +56,6 @@ def genres_crud():
                     msg = 'Gênero atualizado com sucesso!'
                     success = True
 
-                    # logging.debug('Genero atualizado')
-                    # query = f"SELECT * FROM Genero WHERE nome = %s;"
-                    # params = (genres_form["nome"],)
-                    # logging.debug(execute_query(query, params))
                 except Exception as e:
                     msg= f'Erro ao atualizar autor! {e}'
                     success = False
@@ -97,11 +89,6 @@ def genres_crud():
                 params = ('false', request.form.get('nome'),)
                 execute_query(query, params)
                 logging.debug('Genero deletado')
-
-                # Test
-                # query = f'SELECT ativo FROM Genero WHERE nome = %s;'
-                # params = (request.form.get('nome'),)
-                # tuples = execute_query(query, params)
 
                 msg = 'Gênero deletado com sucesso!'
                 success=True

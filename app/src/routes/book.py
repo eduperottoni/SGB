@@ -64,7 +64,7 @@ def books_crud():
             else:
                 logging.debug('Livro não existe e vamos criá-lo!')
 
-                query = f"INSERT INTO Livro (titulo, lancamento, editora, num_copias) VALUES {book_form['titulo'], book_form['lancamento'], book_form['editora'], book_form['num_copias']}"
+                query = f"INSERT INTO Livro (titulo, lancamento, editora, genero, num_copias) VALUES {book_form['titulo'], book_form['lancamento'], book_form['editora'], book_form['genero'], book_form['num_copias']}"
                 logging.debug(book_form)
                 params = ()
                 msg, success = '', False
@@ -131,7 +131,11 @@ def books_crud():
 
             logging.debug(f'MOSTRAREMOS OS RESULTADOS DA BUSCA POR Livros: {tuples}')
             
-            return render_template('clients.html', search=tuples)
+            return render_template('general_read.html',
+                                    response_list=tuples,
+                                    keys_to_consider=[key for key in tuples[0]],
+                                    entity='livro',
+                                    try_again_link='books_crud')
         
         elif action == 'add_remove_author':
             logging.debug('VAMOS ADICIONAR AUTORES AO LIVRO')
@@ -229,7 +233,14 @@ def books_crud():
             book_form['generos'] = {k['nome']:k['descricao'] for k in tuples}
 
         elif action == 'read':
-                form_title = 'Buscar Livro'
+            form_title = 'Buscar Livro'
+            # Pega editoras para mostrar nos options dos selects
+            tuples = get_registers_in_table('Editora')
+            book_form['editoras'] = {k['id']:k['nome'] for k in tuples}
+            tuples = get_registers_in_table('Autor')
+            book_form['autores'] = {k['id']:k['nome'] for k in tuples}
+            tuples = get_registers_in_table('Genero')
+            book_form['generos'] = {k['nome']:k['descricao'] for k in tuples}
 
         return render_template('form_book.html',
                                 book_form=book_form,

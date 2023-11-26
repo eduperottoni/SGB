@@ -98,19 +98,6 @@ def genres_crud():
                 execute_query(query, params)
                 logging.debug('Genero deletado')
 
-                id = request.args.get('id')
-                query = f"SELECT * FROM Livro WHERE id = %s;"
-                params = (id,)
-                book_form = execute_query(query, params)[0]
-
-                form_title = 'Atualizar Livro'
-                # Pega editoras para mostrar nos options dos selects
-                tuples = get_registers_in_table('Editora', ativo='true')
-                book_form['editoras'] = {k['id']:k['nome'] for k in tuples}
-                tuples = get_registers_in_table('Autor', ativo='true')
-                book_form['autores'] = {k['id']:k['nome'] for k in tuples}
-                tuples = get_registers_in_table('Genero', ativo='true')
-                book_form['generos'] = {k['nome']:k['descricao'] for k in tuples}
                 # Test
                 # query = f'SELECT ativo FROM Genero WHERE nome = %s;'
                 # params = (request.form.get('nome'),)
@@ -148,7 +135,7 @@ def genres_crud():
                     form_title = 'Atualizar genero'
 
                 else:
-                    genres_list = get_registers_in_table('Genero')
+                    genres_list = get_registers_in_table('Genero', ativo='true')
                     logging.debug(genres_list)
                     return render_template('choose_genre.html', genres=genres_list)
 
@@ -159,7 +146,7 @@ def genres_crud():
                 form_title = 'Buscar genero'
 
             case 'delete':
-                    genres_list = get_registers_in_table('Genero')
+                    genres_list = get_registers_in_table('Genero', ativo='true')
                     logging.debug(genres_list)
                     return render_template('choose_genre.html', genres=genres_list)
 

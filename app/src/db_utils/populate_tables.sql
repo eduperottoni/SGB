@@ -64,7 +64,7 @@ INSERT INTO Genero (nome, descricao) VALUES
 
 -- Agatha Christie
 INSERT INTO Livro (titulo, lancamento, editora, genero, num_copias) VALUES
-    ('Assassinato no Expresso Oriente', '1934-01-01', 2, 'Mistério', 100),
+    ('Assassinato no Expresso Oriente', '1934-01-01', 2, 'Mistério', 1),
     ('O Assassinato de Roger Ackroyd', '1926-06-06', 3, 'Mistério', 75),
     ('Morte no Nilo', '1937-11-01', 4, 'Mistério', 50);
 

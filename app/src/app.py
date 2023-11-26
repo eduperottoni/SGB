@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from config import create_tables, populate_tables
 from db_utils.utils import execute_query
-from routes import book, author, client, genre, publisher, clients_with_no_rents, rented_books, top_5_clients, book_by_author, rent, book_return
+from routes import rent_history, book, author, client, genre, publisher, clients_with_no_rents, rented_books, top_5_clients, book_by_author, rent, book_return
 
 from datetime import datetime
 import logging
@@ -61,6 +61,10 @@ def rent_book():
 @app.route('/return-book/', methods=['GET', 'POST'])
 def return_book():
     return book_return.return_book()
+
+@app.route('/rent_history_view/', methods=['GET', 'POST'])
+def rent_history_view():
+    return rent_history.rent_history_view()
     
 
     

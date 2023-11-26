@@ -29,13 +29,14 @@ def return_book():
             WHERE historico.data_devolucao IS NULL 
             AND historico.cliente = '{return_form['cliente']}'"""
             tuples = execute_query(query)
-            form = {}
-            form['livros'] = {k['id_historico']:k['titulo'] for k in tuples}
-            form_title = 'Devolver livro'
-            return render_template('form_return_step_2.html',
-                                    return_form=form,
-                                    form_title=form_title,
-                                    crud_action=action)
+            if tuples != None:
+                form = {}
+                form['livros'] = {k['id_historico']:k['titulo'] for k in tuples}
+                form_title = 'Devolver livro'
+                return render_template('form_return_step_2.html',
+                                        return_form=form,
+                                        form_title=form_title,
+                                        crud_action=action)
 
     return_form = {}
     form_title='Registrar Devolução'

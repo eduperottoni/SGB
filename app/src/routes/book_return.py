@@ -22,6 +22,13 @@ def return_book():
             valor_pago = '{return_form['valor_pago']}' 
             WHERE id = '{return_form['id_historico']}'"""
             tuples = execute_query(query)
+            success = True
+            msg = "Livro devolvido com sucesso!"
+            return render_template('feedback_message.html',
+                            msg = msg,
+                            action = action,
+                            success = success,
+                            try_again_link = 'return_book')
 
         elif 'cliente' in return_form:
             query = f"""SELECT livro.id, livro.titulo, historico.id AS id_historico
@@ -37,6 +44,14 @@ def return_book():
                                         return_form=form,
                                         form_title=form_title,
                                         crud_action=action)
+            else:
+                success = False
+                msg = "Esse usuário não tem nenhum aluguel pendente!"
+                return render_template('feedback_message.html',
+                                msg = msg,
+                                action = action,
+                                success = success,
+                                try_again_link = 'return_book')
 
     return_form = {}
     form_title='Registrar Devolução'

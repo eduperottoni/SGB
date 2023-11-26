@@ -16,6 +16,14 @@ def rent_book():
         query = f"UPDATE Livro SET num_copias = num_copias - 1 WHERE id = '{rent_form['livro']}'"
         tuples = execute_query(query)
 
+        success = True
+        msg = "Livro alugado com sucesso!"
+        return render_template('feedback_message.html',
+                                msg = msg,
+                                action = action,
+                                success = success,
+                                try_again_link = 'rent_book')
+
     rent_form = {}
     form_title='Registrar Empréstimo'
     tuples = get_registers_in_table('Cliente')

@@ -1,7 +1,7 @@
 -- DÚVIDA: É MELHOR NÃO APAGAR AS ENTIDADES PARA MANTER UM HISTÓRICO APONTANDO PARA ELAS OU
 -- APAGÁ-LAS E QUANDO ISSO ACONTECER FAZER UM REGISTRO "BURRO" NO HISTÓRICO ?????
 
-DROP TABLE Sobre;
+-- DROP TABLE Sobre;
 DROP TABLE Escrito_por;
 -- DROP TABLE Livros_alugados;
 DROP TABLE Historico;
@@ -11,12 +11,22 @@ DROP TABLE Cliente;
 DROP TABLE Autor;
 DROP TABLE Genero;
 
+CREATE TABLE Genero 
+( 
+ nome VARCHAR(30) PRIMARY KEY NOT NULL,
+ descricao VARCHAR(100) NOT NULL,
+ ativo BOOLEAN DEFAULT true,
+
+ CONSTRAINT generos_unicos UNIQUE (descricao)
+); 
+
 CREATE TABLE Editora 
 ( 
  id SERIAL PRIMARY KEY,
  nome VARCHAR(30) NOT NULL,
  endereco VARCHAR(75),
  contato VARCHAR(20) NOT NULL,
+ ativo BOOLEAN DEFAULT true,
 
  CONSTRAINT editoras_unicas UNIQUE (nome, endereco, contato)
 ); 
@@ -28,6 +38,7 @@ CREATE TABLE Livro
  lancamento DATE NOT NULL,
  id SERIAL PRIMARY KEY,  -- Utilize SERIAL para autoincremento em PostgreSQL
  editora INT REFERENCES Editora(id),
+ genero VARCHAR(30) REFERENCES Genero(nome),
  num_copias INT NOT NULL DEFAULT 0,  -- Removi as aspas simples e ajustei o valor padrão
  ativo BOOLEAN DEFAULT true,
  
@@ -55,13 +66,6 @@ CREATE TABLE Autor
  CONSTRAINT autores_unicos UNIQUE (nome, biografia, data_nascimento)
 ); 
 
-CREATE TABLE Genero 
-( 
- nome VARCHAR(30) PRIMARY KEY NOT NULL,
- descricao VARCHAR(100) NOT NULL
-); 
-
-
 CREATE TABLE Historico
 (
     id SERIAL PRIMARY KEY,
@@ -87,10 +91,9 @@ CREATE TABLE Escrito_por
 ); 
 
 
-CREATE TABLE Sobre 
-( 
- genero VARCHAR(30) REFERENCES Genero(nome),
- livro INT REFERENCES Livro(id),
- PRIMARY KEY (genero, livro)
-);
-
+-- CREATE TABLE Sobre 
+-- ( 
+--  genero VARCHAR(30) REFERENCES Genero(nome),
+--  livro INT REFERENCES Livro(id),
+--  PRIMARY KEY (genero, livro)
+-- );

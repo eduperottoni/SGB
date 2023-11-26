@@ -40,66 +40,87 @@ INSERT INTO Autor (nome, biografia, data_nascimento) VALUES
 ('Isabel Allende', 'É uma escritora chilena, autora de "A Casa dos Espíritos". Nasceu em Lima, Peru, em 2 de agosto de 1942.', '1942-08-02'),
 ('George Orwell', 'Foi um escritor inglês, famoso por "1984" e "A Revolução dos Bichos". Nasceu em Motihari, Índia, em 25 de junho de 1903.', '1903-06-25');
 
+INSERT INTO Genero (nome, descricao) VALUES
+('Ficção Científica', 'Livros que exploram mundos imaginários, avanços tecnológicos e futuros alternativos.'),
+('Fantasia', 'Obras que envolvem elementos mágicos, criaturas místicas e mundos fantásticos.'),
+('Romance', 'Narrativas centradas em relacionamentos amorosos e emocionais entre personagens.'),
+('Mistério', 'Livros que envolvem suspense, intrigas e resolução de enigmas.'),
+('Thriller', 'Narrativas emocionantes e cheias de suspense, muitas vezes relacionadas a crimes.'),
+('Não Ficção', 'Livros baseados em fatos reais, como biografias, ensaios e livros de história.'),
+('História', 'Obras que exploram eventos passados, culturas e sociedades.'),
+('Autoajuda', 'Livros focados no desenvolvimento pessoal e autoaperfeiçoamento.'),
+('Ciência', 'Livros que explicam conceitos científicos e descobertas.'),
+('Biografia', 'Histórias da vida real de pessoas famosas ou notáveis.'),
+('Aventura', 'Narrativas cheias de ação, viagens e desafios.'),
+('Horror', 'Livros que buscam provocar medo e suspense no leitor.'),
+('Poesia', 'Expressão artística por meio de versos e rimas.'),
+('Humor', 'Livros destinados a fazer o leitor rir, muitas vezes por meio de comédia.'),
+('Drama', 'Obras que exploram situações intensas e emocionais.'),
+('Filosofia', 'Livros que exploram questões filosóficas e ideias abstratas.'),
+('Educação', 'Livros que visam educar e transmitir conhecimento.'),
+('Psicologia', 'Obras que abordam temas relacionados à mente humana e comportamento.'),
+('Negócios', 'Livros sobre empreendedorismo, gestão e estratégias de negócios.');
+
 
 -- Agatha Christie
-INSERT INTO Livro (titulo, lancamento, editora, num_copias) VALUES
-    ('Assassinato no Expresso Oriente', '1934-01-01', 2, 100),
-    ('O Assassinato de Roger Ackroyd', '1926-06-06', 3, 75),
-    ('Morte no Nilo', '1937-11-01', 4, 50);
+INSERT INTO Livro (titulo, lancamento, editora, genero, num_copias) VALUES
+    ('Assassinato no Expresso Oriente', '1934-01-01', 2, 'Mistério', 100),
+    ('O Assassinato de Roger Ackroyd', '1926-06-06', 3, 'Mistério', 75),
+    ('Morte no Nilo', '1937-11-01', 4, 'Mistério', 50);
 
 -- Gabriel Garcia Marquez
-INSERT INTO Livro (titulo, lancamento, editora, num_copias) VALUES
-    ('Cem Anos de Solidão', '1967-05-30', 5, 150),
-    ('O Amor nos Tempos do Cólera', '1985-01-01', 6, 100),
-    ('Crônica de uma Morte Anunciada', '1981-01-01', 7, 80);
+INSERT INTO Livro (titulo, lancamento, editora, genero, num_copias) VALUES
+    ('Cem Anos de Solidão', '1967-05-30', 5, 'Fantasia', 150),
+    ('O Amor nos Tempos do Cólera', '1985-01-01', 6, 'Romance', 100),
+    ('Crônica de uma Morte Anunciada', '1981-01-01', 7, 'Mistério', 80);
 
 -- Jane Austen
-INSERT INTO Livro (titulo, lancamento, editora, num_copias) VALUES
-    ('Orgulho e Preconceito', '1813-01-28', 8, 120),
-    ('Razão e Sensibilidade', '1811-01-01', 9, 90),
-    ('Emma', '1816-12-23', 10, 70);
+INSERT INTO Livro (titulo, lancamento, editora, genero, num_copias) VALUES
+    ('Orgulho e Preconceito', '1813-01-28', 8, 'Romance', 120),
+    ('Razão e Sensibilidade', '1811-01-01', 9, 'Romance', 90),
+    ('Emma', '1816-12-23', 10, 'Romance', 70);
 
 -- Haruki Murakami
-INSERT INTO Livro (titulo, lancamento, editora, num_copias) VALUES
-    ('Norwegian Wood', '1987-08-04', 11, 80),
-    ('Kafka à Beira-Mar', '2002-01-01', 12, 60),
-    ('1Q84', '2009-05-29', 13, 100);
+INSERT INTO Livro (titulo, lancamento, editora, genero, num_copias) VALUES
+    ('Norwegian Wood', '1987-08-04', 11, 'Ficção Científica', 80),
+    ('Kafka à Beira-Mar', '2002-01-01', 12, 'Fantasia', 60),
+    ('1Q84', '2009-05-29', 13, 'Ficção Científica', 100);
 
 -- Virginia Woolf
-INSERT INTO Livro (titulo, lancamento, editora, num_copias) VALUES
-    ('Mrs Dalloway', '1925-05-14', 14, 90),
-    ('Orlando', '1928-10-11', 15, 70),
-    ('Para o Farol', '1927-05-05', 16, 50);
+INSERT INTO Livro (titulo, lancamento, editora, genero, num_copias) VALUES
+    ('Mrs Dalloway', '1925-05-14', 14, 'Drama', 90),
+    ('Orlando', '1928-10-11', 15, 'Fantasia', 70),
+    ('Para o Farol', '1927-05-05', 16, 'Romance', 50);
 
 -- Fyodor Dostoevsky
-INSERT INTO Livro (titulo, lancamento, editora, num_copias) VALUES
-    ('Crime e Castigo', '1866-01-01', 17, 110),
-    ('Os Irmãos Karamazov', '1880-11-26', 18, 80),
-    ('O Idiota', '1869-01-01', 19, 60);
+INSERT INTO Livro (titulo, lancamento, editora, genero, num_copias) VALUES
+    ('Crime e Castigo', '1866-01-01', 17, 'Drama', 110),
+    ('Os Irmãos Karamazov', '1880-11-26', 18, 'Drama', 80),
+    ('O Idiota', '1869-01-01', 19, 'Drama', 60);
 
 -- Chimamanda Ngozi Adichie
-INSERT INTO Livro (titulo, lancamento, editora, num_copias) VALUES
-    ('Meio Sol Amarelo', '2006-08-11', 20, 90),
-    ('Americanah', '2023-11-25', 21, 70),
-    ('Hibisco Roxo', '2003-01-01', 22, 50);
+INSERT INTO Livro (titulo, lancamento, editora, genero, num_copias) VALUES
+    ('Meio Sol Amarelo', '2006-08-11', 20, 'Drama', 90),
+    ('Americanah', '2023-11-25', 21, 'Romance', 70),
+    ('Hibisco Roxo', '2003-01-01', 22, 'Romance', 50);
 
 -- Mark Twain
-INSERT INTO Livro (titulo, lancamento, editora, num_copias) VALUES
-    ('As Aventuras de Tom Sawyer', '1876-01-01', 23, 80),
-    ('As Aventuras de Huckleberry Finn', '1884-12-10', 24, 60),
-    ('O Príncipe e o Mendigo', '1881-01-01', 25, 40);
+INSERT INTO Livro (titulo, lancamento, editora, genero, num_copias) VALUES
+    ('As Aventuras de Tom Sawyer', '1876-01-01', 23, 'Aventura', 80),
+    ('As Aventuras de Huckleberry Finn', '1884-12-10', 24, 'Aventura', 60),
+    ('O Príncipe e o Mendigo', '1881-01-01', 25, 'Aventura', 40);
 
 -- Isabel Allende
-INSERT INTO Livro (titulo, lancamento, editora, num_copias) VALUES
-    ('A Casa dos Espíritos', '1982-01-01', 26, 100),
-    ('Eva Luna', '1987-01-01', 27, 70),
-    ('Paula', '1994-01-01', 28, 50);
+INSERT INTO Livro (titulo, lancamento, editora, genero, num_copias) VALUES
+    ('A Casa dos Espíritos', '1982-01-01', 26, 'Drama', 100),
+    ('Eva Luna', '1987-01-01', 27, 'Romance', 70),
+    ('Paula', '1994-01-01', 28, 'Biografia', 50);
 
 -- George Orwell
-INSERT INTO Livro (titulo, lancamento, editora, num_copias) VALUES
-    ('1984', '1949-06-08', 28, 120),
-    ('A Revolução dos Bichos', '1945-08-17', 28, 90),
-    ('Dentro da Baleia', '1939-01-01', 28, 70);
+INSERT INTO Livro (titulo, lancamento, editora, genero, num_copias) VALUES
+    ('1984', '1949-06-08', 28, 'Ficção Científica', 120),
+    ('A Revolução dos Bichos', '1945-08-17', 28, 'Drama', 90),
+    ('Dentro da Baleia', '1939-01-01', 28, 'Não Ficção', 70);
 
 INSERT INTO Cliente (cpf, nome, data_nascimento, data_registro) VALUES
     ('12345678901', 'João Silva', '1980-05-15', '2020-01-05'),
@@ -228,59 +249,37 @@ INSERT INTO Historico (data_aluguel, data_devolucao, valor_pago, cliente, livro)
     ('2022-06-08', NULL, 21.00, '01234987654', 30);
 
 
-INSERT INTO Genero (nome, descricao) VALUES
-('Ficção Científica', 'Livros que exploram mundos imaginários, avanços tecnológicos e futuros alternativos.'),
-('Fantasia', 'Obras que envolvem elementos mágicos, criaturas místicas e mundos fantásticos.'),
-('Romance', 'Narrativas centradas em relacionamentos amorosos e emocionais entre personagens.'),
-('Mistério', 'Livros que envolvem suspense, intrigas e resolução de enigmas.'),
-('Thriller', 'Narrativas emocionantes e cheias de suspense, muitas vezes relacionadas a crimes.'),
-('Não Ficção', 'Livros baseados em fatos reais, como biografias, ensaios e livros de história.'),
-('História', 'Obras que exploram eventos passados, culturas e sociedades.'),
-('Autoajuda', 'Livros focados no desenvolvimento pessoal e autoaperfeiçoamento.'),
-('Ciência', 'Livros que explicam conceitos científicos e descobertas.'),
-('Biografia', 'Histórias da vida real de pessoas famosas ou notáveis.'),
-('Aventura', 'Narrativas cheias de ação, viagens e desafios.'),
-('Horror', 'Livros que buscam provocar medo e suspense no leitor.'),
-('Poesia', 'Expressão artística por meio de versos e rimas.'),
-('Humor', 'Livros destinados a fazer o leitor rir, muitas vezes por meio de comédia.'),
-('Drama', 'Obras que exploram situações intensas e emocionais.'),
-('Filosofia', 'Livros que exploram questões filosóficas e ideias abstratas.'),
-('Educação', 'Livros que visam educar e transmitir conhecimento.'),
-('Psicologia', 'Obras que abordam temas relacionados à mente humana e comportamento.'),
-('Negócios', 'Livros sobre empreendedorismo, gestão e estratégias de negócios.');
-
-
-INSERT INTO Sobre (genero, livro) VALUES
-('Ficção Científica', 1),
-('Fantasia', 2),
-('Romance', 3),
-('Mistério', 4),
-('Thriller', 5),
-('Não Ficção', 6),
-('História', 7),
-('Autoajuda', 8),
-('Ciência', 9),
-('Biografia', 10),
-('Aventura', 11),
-('Horror', 12),
-('Poesia', 13),
-('Humor', 14),
-('Drama', 15),
-('Filosofia', 16),
-('Educação', 17),
-('Psicologia', 18),
-('Negócios', 19),
-('Ficção Científica', 20),
-('Fantasia', 21),
-('Romance', 22),
-('Mistério', 23),
-('Thriller', 24),
-('Não Ficção', 25),
-('História', 26),
-('Autoajuda', 27),
-('Ciência', 28),
-('Biografia', 29),
-('Aventura', 30);
+-- INSERT INTO Sobre (genero, livro) VALUES
+-- ('Ficção Científica', 1),
+-- ('Fantasia', 2),
+-- ('Romance', 3),
+-- ('Mistério', 4),
+-- ('Thriller', 5),
+-- ('Não Ficção', 6),
+-- ('História', 7),
+-- ('Autoajuda', 8),
+-- ('Ciência', 9),
+-- ('Biografia', 10),
+-- ('Aventura', 11),
+-- ('Horror', 12),
+-- ('Poesia', 13),
+-- ('Humor', 14),
+-- ('Drama', 15),
+-- ('Filosofia', 16),
+-- ('Educação', 17),
+-- ('Psicologia', 18),
+-- ('Negócios', 19),
+-- ('Ficção Científica', 20),
+-- ('Fantasia', 21),
+-- ('Romance', 22),
+-- ('Mistério', 23),
+-- ('Thriller', 24),
+-- ('Não Ficção', 25),
+-- ('História', 26),
+-- ('Autoajuda', 27),
+-- ('Ciência', 28),
+-- ('Biografia', 29),
+-- ('Aventura', 30);
 
 -- INSERT INTO Livros_alugados (cliente, id_historico) 
 -- SELECT 

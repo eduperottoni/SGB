@@ -82,7 +82,7 @@ def authors_crud():
                                    entity='autor',
                                    try_again_link='authors_crud')
             except Exception as e:
-                msg = 'Erro ao ler cliente'
+                msg = 'Erro ao ler autor! {e}'
                 success = False            
         
 
@@ -96,14 +96,14 @@ def authors_crud():
                 logging.debug('Autor deletado')
 
                 #Test
-                query = f'SELECT * FROM Autor WHERE id = %s;'
-                params = (request.form.get('id'),)
-                tuples = execute_query(query, params)
+                # query = f'SELECT * FROM Autor WHERE id = %s;'
+                # params = (request.form.get('id'),)
+                # tuples = execute_query(query, params)
 
                 msg='Autor deletado com sucesso'
                 success=True
             except:
-                msg='Erro ao deletar autor'
+                msg= f'Erro ao deletar autor! {e}'
                 success=False
             
 

@@ -38,16 +38,8 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="autor">Autor:</label>
-                <select name="autor" class="form-select" aria-label="Default select example">
-                    {% for id, name in book_form['autores'].items() %}
-                    <option value="{{id}}">{{name}}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
                 <label for="genero">Gênero:</label>
-                <select name="autor" class="form-select" aria-label="Default select example">
+                <select name="genero" class="form-select" aria-label="Default select example">
                     {% for name, descricao in book_form['generos'].items() %}
                     <option value="{{name}}">{{name}}</option>
                     {% endfor %}

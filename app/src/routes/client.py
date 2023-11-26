@@ -1,5 +1,6 @@
 from flask import request, render_template, redirect
 import logging
+from psycopg2.errors import UniqueViolation
 from datetime import datetime
 
 from db_utils.utils import execute_query
@@ -10,17 +11,36 @@ def clients_crud():
     logging.debug(action)
     
     if request.method == 'POST':
+        msg, success = '', False
         logging.debug('ISSO FOI UM POST')
         client_form = request.form
     
         if action == 'create':
             query = f'INSERT INTO Cliente (cpf, nome, data_nascimento, data_registro) VALUES {client_form["cpf"], client_form["nome"], client_form["data_nascimento"], datetime.now().isoformat()}'
-            execute_query(query) 
             
-            logging.debug('Cliente criado')
-            query = f"SELECT * FROM Cliente WHERE cpf = %s;"
-            params = (client_form["cpf"],)
-            logging.debug(execute_query(query, params))
+            try:
+                execute_query(query) 
+                
+                logging.debug('Cliente criado')
+                query = f"SELECT * FROM Cliente WHERE cpf = %s;"
+                params = (client_form["cpf"],)
+                logging.debug(execute_query(query, params))
+                msg = 'Cliente criado com sucesso'
+                success = True
+            except UniqueViolation:
+                query = """
+                UPDATE Cliente
+                SET ativo = %s
+                WHERE cpf = %s AND nome = %s AND data_nascimento = %s;
+                """
+                params = ('true', client_form['cpf'], client_form["nome"], client_form["data_nascimento"])
+                execute_query(query, params)
+                
+                msg = 'Cliente existia e foi reativado!'
+                success = True
+            except Exception as e:
+                msg = f'Erro ao criar cliente! {e}'
+                success = False
 
         elif action == 'update':
             logging.debug('Vamos atualizar o cliente')
@@ -32,37 +52,58 @@ def clients_crud():
                 WHERE cpf = %s
             """
             values = (client_form['nome'], client_form['data_nascimento'], client_form['cpf'])
-            execute_query(query, values)
+            
+            
+            try:
+                execute_query(query, values)
 
-            logging.debug('Cliente atualizado')
-            query = f"SELECT * FROM Cliente WHERE cpf = %s;"
-            params = (client_form["cpf"],)
-            logging.debug(execute_query(query, params))
+                # logging.debug('Cliente atualizado')
+                # query = f"SELECT * FROM Cliente WHERE cpf = %s;"
+                # params = (client_form["cpf"],)
+                # logging.debug(execute_query(query, params))
+                msg = 'Cliente atualizado com sucesso!'
+                success = True
+            except Exception as e:
+                msg = f'Erro ao atulizar autor! {e}'
+                success = False
+
 
         elif action == 'delete':
-            logging.debug(request.form)
-            #FIXME Ver se é possível deletar (se cliente não tem empréstimos pendentes, por exemplo)
-            query = "UPDATE Cliente SET ativo = %s WHERE cpf = %s"
-            params = ('false', client_form['cpf'])
-            execute_query(query, params)
 
-            return render_template('feedback_message.html',
-                                    msg = 'Cliente deletado com sucesso!',
-                                    action = action,
-                                    success = True,
-                                    try_again_link = 'clients_crud')
-
-            return redirect('/clients-crud/')
+            client = get_client_with_open_rents(client_form['cpf'])
+            # Se o cliente não tem empréstimos em aberto:
+            if not client:
+                query = "UPDATE Cliente SET ativo = %s WHERE cpf = %s"
+                params = ('false', client_form['cpf'])
+                execute_query(query, params)
+                success = True
+                msg = 'Cliente deletado com sucesso!'
+            # Se o cliente tem empréstimos em aberto
+            else:
+                success = False
+                msg = 'Cliente tem empréstimos em aberto e não pode ser deletado!'
 
 
         elif action == 'read':
             clients_info = {k: v for k, v in request.form.items() if v}
 
-            tuples = get_registers_in_table('Cliente', **clients_info)
+            try:
+                tuples = get_registers_in_table('Cliente', **clients_info)
+                
+                return render_template('general_read.html',
+                                   response_list=tuples,
+                                   keys_to_consider=[key for key in tuples[0]],
+                                   entity='cliente',
+                                   try_again_link='clients_crud')
+            except Exception as e:
+                msg = 'Erro ao ler cliente'
+        
 
-            logging.debug(f'MOSTRAREMOS OS RESULTADOS DA BUSCA POR CLIENTES: {tuples}')
-            
-            return render_template('clients.html', search=tuples)
+        return render_template('feedback_message.html',
+                                msg = msg,
+                                action = action,
+                                success = success,
+                                try_again_link = 'clients_crud')
 
     # If method == 'GET':
     if action:
@@ -108,3 +149,18 @@ def clients_crud():
                            general_btn_name='cliente',
                            url_self_crud='clients_crud'
                            )
+
+
+def get_client_with_open_rents(cpf: str) -> 'list[RealDictRow]':
+    query = """
+    SELECT Cliente.cpf AS cpf_cliente, 
+    Historico.id AS id_historico 
+    FROM Cliente
+    JOIN Historico ON Historico.cliente = Cliente.cpf AND Historico.data_devolucao IS NULL
+    WHERE Cliente.cpf = %s
+    """
+    params = (cpf,)
+
+    client = execute_query(query, params)
+
+    return client

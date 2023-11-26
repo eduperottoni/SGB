@@ -11,7 +11,16 @@
         <div class="form-group">
             <label for="name">Nome do gênero:</label>
             <input 
-                value="{{ genre_form['nome'] }}" type="text" class="form-control" id="nome" name="nome" maxlenght="30" {% if crud_action != 'read' %}required{% endif %}>
+                value="{{ genre_form['nome'] }}"
+                type="text"
+                class="form-control"
+                id="nome"
+                name="nome"
+                maxlenght="30"
+                {% if crud_action != 'read' %}required{% endif %}
+                {% if crud_action in ['update'] %}
+                    disabled
+                {% endif %}>
         </div>
 
         <div class="form-group">

@@ -13,7 +13,9 @@
                     type="text"
                     class="form-control"
                     id="id" name="id"
-                    {% if crud_action != 'read' %}required{% endif %}
+                    {% if crud_action not in ['read', 'create'] %}
+                    required
+                    {% endif %}
                     {% if crud_action in ['update', 'create'] %}
                         disabled
                     {% endif %}
@@ -32,16 +34,33 @@
             <div class="form-group">
                 <label for="editora">Editora:</label>
                 <select name="editora" class="form-select" aria-label="Default select example">
+                    {% if crud_action == 'read' %}
+                    <option value="" selected></option>
+                    {% endif %}
                     {% for id, name in book_form['editoras'].items() %}
-                    <option value="{{id}}">{{name}}</option>
+                        
+                        <option value="{{id}}"
+                            {% if crud_action == 'update' and book_form['editora'] == id %}
+                            selected
+                            {% endif %}
+                        >{{name}}</option>
+                        
                     {% endfor %}
                 </select>
             </div>
             <div class="form-group">
                 <label for="genero">Gênero:</label>
                 <select name="genero" class="form-select" aria-label="Default select example">
+                    {% if crud_action == 'read' %}
+                    <option value="" selected></option>
+                    {% endif %}
                     {% for name, descricao in book_form['generos'].items() %}
-                    <option value="{{name}}">{{name}}</option>
+                        
+                        <option value="{{name}}" 
+                        {% if crud_action == 'update' and book_form['genero'] == name %}
+                        selected
+                        {% endif %}
+                        >{{name}}</option>
                     {% endfor %}
                 </select>
             </div>

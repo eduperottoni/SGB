@@ -10,19 +10,34 @@
         <table class="table table-dark">
             <thead>
               <tr>
+                {% if ranking %}
+                <th scope="col">#</th>
+                {% endif %}
                 {% for key in keys_to_consider %}
                 <th scope="col">{{key}}</th>
                 {% endfor %}
               </tr>
             </thead>
             <tbody>
-                {% for row in response_list %}
-                <tr>
-                    {% for key in keys_to_consider %}
-                    <td>{{row[key]}}</td>
+                {% if ranking %}
+                    {% for row in response_list %}
+                        <tr>
+                            <th>{{loop.index}}</th>
+                            {% for key in keys_to_consider %}
+                            <td>{{row[key]}}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}  
+                {% else %}
+                    {% for row in response_list %}
+                        <tr>
+                            {% for key in keys_to_consider %}
+                            <td>{{row[key]}}</td>
+                            {% endfor %}
+                        </tr>
                     {% endfor %}
-                </tr>
-                {% endfor %}
+                {% endif %}
+
             </tbody>
         </table>
     </div>

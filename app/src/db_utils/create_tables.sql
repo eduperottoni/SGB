@@ -1,12 +1,12 @@
-DROP TABLE Escrito_por;
-DROP TABLE Historico;
-DROP table Livro;
-DROP TABLE Editora;
-DROP TABLE Cliente;
-DROP TABLE Autor;
-DROP TABLE Genero;
+DROP TABLE IF EXISTS Escrito_por;
+DROP TABLE IF EXISTS Historico;
+DROP table IF EXISTS Livro;
+DROP TABLE IF EXISTS Editora;
+DROP TABLE IF EXISTS Cliente;
+DROP TABLE IF EXISTS Autor;
+DROP TABLE IF EXISTS Genero;
 
-CREATE TABLE Genero 
+CREATE TABLE IF NOT EXISTS Genero 
 ( 
  nome VARCHAR(30) PRIMARY KEY NOT NULL,
  descricao VARCHAR(100) NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE Genero
  CONSTRAINT generos_unicos UNIQUE (descricao)
 ); 
 
-CREATE TABLE Editora 
+CREATE TABLE IF NOT EXISTS Editora 
 ( 
  id SERIAL PRIMARY KEY,
  nome VARCHAR(30) NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE Editora
  CONSTRAINT editoras_unicas UNIQUE (nome, endereco, contato)
 ); 
 
-CREATE TABLE Livro 
+CREATE TABLE IF NOT EXISTS Livro 
 ( 
  titulo VARCHAR(50) NOT NULL,
  lancamento DATE NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE Livro
  CONSTRAINT livros_unicos UNIQUE (titulo, lancamento, editora)
 );
 
-CREATE TABLE Cliente 
+CREATE TABLE IF NOT EXISTS Cliente 
 ( 
  cpf CHAR(11) PRIMARY KEY,
  nome VARCHAR(50) NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE Cliente
  ativo BOOLEAN DEFAULT true
 );
 
-CREATE TABLE Autor 
+CREATE TABLE IF NOT EXISTS Autor 
 ( 
  id SERIAL PRIMARY KEY,
  nome VARCHAR(50) NOT NULL,
@@ -59,7 +59,7 @@ CREATE TABLE Autor
  CONSTRAINT autores_unicos UNIQUE (nome, biografia, data_nascimento)
 ); 
 
-CREATE TABLE Historico
+CREATE TABLE IF NOT EXISTS Historico
 (
     id SERIAL PRIMARY KEY,
     data_aluguel DATE NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE Historico
     livro INT REFERENCES Livro(id)
 );
 
-CREATE TABLE Escrito_por 
+CREATE TABLE IF NOT EXISTS Escrito_por 
 ( 
  autor INT REFERENCES Autor(id),
  livro INT REFERENCES Livro(id),

@@ -181,7 +181,7 @@ def books_crud():
                     book_form['autores_totais'] = {k['id']:k['nome'] for k in tuples}
                     id = request.args.get('id')
                     tuples = get_registers_in_table('Escrito_por', livro=id)
-                    book_form['autores_livro'] = [k['autor']for k in tuples]
+                    book_form['autores_livro'] = [k['autor']for k in tuples] if tuples else None
                     return render_template('form_authors_in_book.html',
                                             book_form=book_form,
                                             form_title='Modificar autores do livro',
@@ -240,12 +240,9 @@ def get_books_informations() -> 'list[RealDictRow]':
     query = """
     SELECT 
     Livro.id AS livro_id, Livro.titulo AS livro_titulo, Livro.lancamento, Livro.num_copias,
-    Autor.nome AS autor_nome,
     Livro.genero AS genero_nome,
     Editora.nome AS editora_nome
     FROM Livro
-    JOIN Escrito_por ON Livro.id = Escrito_por.livro
-    JOIN Autor ON Escrito_por.autor = Autor.id
     JOIN Editora ON Editora.id = Livro.editora
     WHERE Livro.ativo = %s
     """

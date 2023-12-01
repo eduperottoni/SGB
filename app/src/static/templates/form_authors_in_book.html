@@ -27,7 +27,10 @@
                     role="switch"
                     id="{{id_autor}}"
                     value="{{nome_autor}}"
-                    {% if id_autor in book_form['autores_livro'] %}checked{% endif %}>
+                    {% if book_form['autores_livro'] %}
+                    {% if id_autor in book_form['autores_livro'] %}checked{% endif %}
+                    {% endif %}
+                    >
                     <label class="form-check-label" for={{id_autor}}>{{nome_autor}}</label>
                 </div>
                 {% endfor %}

@@ -29,9 +29,9 @@ def genres_crud():
                     query="""
                     UPDATE Genero
                     SET ativo = %s
-                    WHERE descricao = %s
+                    WHERE nome = %s
                     """
-                    params = ('true', genres_form['descricao'])
+                    params = ('true', genres_form['nome'])
                     execute_query(query, params)
                     msg = 'Gênero existia e foi reativado!'
                     success = True
